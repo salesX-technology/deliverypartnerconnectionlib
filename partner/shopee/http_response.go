@@ -16,3 +16,6 @@ type OrderResponse struct {
 type UpdateOrderResponse struct {
 	RetCode int `json:"ret_code"`
 }
+
+type CancelOrderResponse struct {
+}

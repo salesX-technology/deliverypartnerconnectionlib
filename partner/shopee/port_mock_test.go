@@ -128,3 +128,41 @@ func (mr *MockShopeeUpdateOrderAPIMockRecorder) Post(endpoint, headers, request 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockShopeeUpdateOrderAPI)(nil).Post), endpoint, headers, request)
 }
+
+// MockShopeeCancelOrderAPI is a mock of ShopeeCancelOrderAPI interface.
+type MockShopeeCancelOrderAPI struct {
+	ctrl     *gomock.Controller
+	recorder *MockShopeeCancelOrderAPIMockRecorder
+}
+
+// MockShopeeCancelOrderAPIMockRecorder is the mock recorder for MockShopeeCancelOrderAPI.
+type MockShopeeCancelOrderAPIMockRecorder struct {
+	mock *MockShopeeCancelOrderAPI
+}
+
+// NewMockShopeeCancelOrderAPI creates a new mock instance.
+func NewMockShopeeCancelOrderAPI(ctrl *gomock.Controller) *MockShopeeCancelOrderAPI {
+	mock := &MockShopeeCancelOrderAPI{ctrl: ctrl}
+	mock.recorder = &MockShopeeCancelOrderAPIMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockShopeeCancelOrderAPI) EXPECT() *MockShopeeCancelOrderAPIMockRecorder {
+	return m.recorder
+}
+
+// Post mocks base method.
+func (m *MockShopeeCancelOrderAPI) Post(endpoint string, headers map[string]string, request CancelOrderRequest) (CancelOrderResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Post", endpoint, headers, request)
+	ret0, _ := ret[0].(CancelOrderResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Post indicates an expected call of Post.
+func (mr *MockShopeeCancelOrderAPIMockRecorder) Post(endpoint, headers, request any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockShopeeCancelOrderAPI)(nil).Post), endpoint, headers, request)
+}

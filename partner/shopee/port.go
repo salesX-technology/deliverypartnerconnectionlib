@@ -12,3 +12,7 @@ type ShopeePickUpTimeAPI interface {
 type ShopeeUpdateOrderAPI interface {
 	Post(endpoint string, headers map[string]string, request UpdateOrderRequest) (UpdateOrderResponse, error)
 }
+
+type ShopeeCancelOrderAPI interface {
+	Post(endpoint string, headers map[string]string, request CancelOrderRequest) (CancelOrderResponse, error)
+}

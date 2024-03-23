@@ -79,3 +79,9 @@ type UpdateOrderRequest struct {
 	UserSecret string  `json:"user_secret"`
 	Orders     []Order `json:"orders"`
 }
+
+type CancelOrderRequest struct {
+	UserID         uint64   `json:"user_id"`
+	UserSecret     string   `json:"user_secret"`
+	TrackingNoList []string `json:"tracking_no_list"`
+}

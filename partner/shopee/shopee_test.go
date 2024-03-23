@@ -13,6 +13,7 @@ type ShopeeTestSuite struct {
 
 	mShopeeCreateOrderAPI *MockShoppeeCreateOrderAPI
 	mShopeeUpdateOrderAPI *MockShopeeUpdateOrderAPI
+	mShopeeCancelOrderAPI *MockShopeeCancelOrderAPI
 	mTimeSlotAPI          *MockShopeePickUpTimeAPI
 
 	service *shopeeService
@@ -23,6 +24,7 @@ func (t *ShopeeTestSuite) SetupTest() {
 
 	t.mShopeeCreateOrderAPI = NewMockShoppeeCreateOrderAPI(t.ctrl)
 	t.mShopeeUpdateOrderAPI = NewMockShopeeUpdateOrderAPI(t.ctrl)
+	t.mShopeeCancelOrderAPI = NewMockShopeeCancelOrderAPI(t.ctrl)
 	t.mTimeSlotAPI = NewMockShopeePickUpTimeAPI(t.ctrl)
 
 	userID := uint64(99999)
@@ -33,6 +35,7 @@ func (t *ShopeeTestSuite) SetupTest() {
 		"user_secret",
 		t.mShopeeCreateOrderAPI,
 		t.mShopeeUpdateOrderAPI,
+		t.mShopeeCancelOrderAPI,
 		t.mTimeSlotAPI,
 		WithCheckSignFunc(func(randomInt64, timestamp int64, payload []byte) string {
 			return "check-sign"
@@ -391,5 +394,26 @@ func (t *ShopeeTestSuite) TestGivenShopeeOrderIsUpdating_WhenUpdateOrder_ThenCal
 	}, nil)
 
 	err := t.service.UpdateOrder("tracking_no", aValidNonCODOrder)
+	t.NoError(err)
+}
+
+func (t *ShopeeTestSuite) TestGivenOrderIsExist_WhenCancelOrderSuccess_ThenReturnNoError() {
+	t.mShopeeCancelOrderAPI.EXPECT().Post(
+		"/open/api/v1/order/batch_cancel_order",
+		map[string]string{
+			"Content-Type": "application/json",
+			"app-id":       "10000",
+			"check-sign":   "check-sign",
+			"timestamp":    "12345",
+			"random-num":   "98765",
+		},
+		CancelOrderRequest{
+			UserID:         99999,
+			UserSecret:     "user_secret",
+			TrackingNoList: []string{"tracking_no"},
+		}).
+		Return(CancelOrderResponse{}, nil)
+
+	err := t.service.DeleteOrder("tracking_no")
 	t.NoError(err)
 }

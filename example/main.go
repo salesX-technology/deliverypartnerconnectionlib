@@ -26,19 +26,32 @@ func main() {
 	fDelete := httpclient.NewHTTPFormPoster[flash.FlashOrderDeleteAPIResponse]("https://open-api-tra.flashexpress.com", http.DefaultClient)
 	fs := flash.NewFlashService(fCreate, fUpdate, fDelete, "8db711e11b3fe34f793444d6f2b4679be9da45446fbb82b84e40e90e1868ed75", "AA2315")
 
+	shopeeTimeSlotAPI := httpclient.NewHTTPPoster[shopee.TimeSlotRequest, shopee.TimeSlotResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+	shopeeCreateOrderPoster := httpclient.NewHTTPPoster[shopee.CreateOrderRequest, shopee.CreateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+	shopeeUpdateOrderPoster := httpclient.NewHTTPPoster[shopee.UpdateOrderRequest, shopee.UpdateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+	shopeeCancelOrderPoster := httpclient.NewHTTPPoster[shopee.CancelOrderRequest, shopee.CancelOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+
+	ss := shopee.NewShopeeService(100190, "57e08ead78cf63721eed92911f2dfe8a1a1152ebc880877ceae96e406c16dbab", 36439626319285, "b32776af-28c0-4283-971c-92ac48c01afe", shopeeCreateOrderPoster, shopeeUpdateOrderPoster, shopeeCancelOrderPoster, shopeeTimeSlotAPI)
+
 	dpl := deliverypartnerconnectionlib.New(
 		map[string]deliverypartnerconnectionlib.OrderCreator{
-			"FLASH": fs,
+			"FLASH":  fs,
+			"SHOPEE": ss,
 		},
 		map[string]deliverypartnerconnectionlib.OrderUpdator{
-			"FLASH": fs,
+			"FLASH":  fs,
+			"SHOPEE": ss,
 		},
 		map[string]deliverypartnerconnectionlib.OrderDeleter{
-			"FLASH": fs,
+			"FLASH":  fs,
+			"SHOPEE": ss,
 		})
 
+	// shopeeCreateOrderExample(dpl)
+	shopeeCancelOrderExample(dpl, "SPXTH044752225833")
+
 	// flashCreateOrderExample(dpl)
-	flashDeleteOrderExample(dpl)
+	// flashDeleteOrderExample(dpl)
 
 	// shopeeCreateOrderExample()
 	// fmt.Print("\nshopeeCreateOrderExample\n")
@@ -57,13 +70,8 @@ func main() {
 	// dhlDeleteOrderExample()
 }
 
-func shopeeCreateOrderExample() {
-	shopeeTimeSlotAPI := httpclient.NewHTTPPoster[shopee.TimeSlotRequest, shopee.TimeSlotResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
-	shopeeCreateOrderPoster := httpclient.NewHTTPPoster[shopee.CreateOrderRequest, shopee.CreateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
-	shopeeUpdateOrderPoster := httpclient.NewHTTPPoster[shopee.UpdateOrderRequest, shopee.UpdateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
-
-	svc := shopee.NewShopeeService(100190, "57e08ead78cf63721eed92911f2dfe8a1a1152ebc880877ceae96e406c16dbab", 36439626319285, "b32776af-28c0-4283-971c-92ac48c01afe", shopeeCreateOrderPoster, shopeeUpdateOrderPoster, shopeeTimeSlotAPI)
-	trackingNo, err := svc.CreateOrder(deliverypartnerconnectionlib.Order{
+func shopeeCreateOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib) {
+	trackingNo, err := dpl.CreateOrder("SHOPEE", deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
 		Sender: deliverypartnerconnectionlib.OrderAddress{
@@ -90,12 +98,20 @@ func shopeeCreateOrderExample() {
 	fmt.Printf("shopee trackingNo: %s\n", trackingNo)
 }
 
+func shopeeCancelOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib, trackingNo string) {
+	err := dpl.DeleteOrder("SHOPEE", trackingNo)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func shopeeUpdateOrderExample() {
 	shopeeTimeSlotAPI := httpclient.NewHTTPPoster[shopee.TimeSlotRequest, shopee.TimeSlotResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
 	shopeeCreateOrderPoster := httpclient.NewHTTPPoster[shopee.CreateOrderRequest, shopee.CreateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
 	shopeeUpdateOrderPoster := httpclient.NewHTTPPoster[shopee.UpdateOrderRequest, shopee.UpdateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+	shopeeCancelOrderPoster := httpclient.NewHTTPPoster[shopee.CancelOrderRequest, shopee.CancelOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
 
-	svc := shopee.NewShopeeService(100190, "57e08ead78cf63721eed92911f2dfe8a1a1152ebc880877ceae96e406c16dbab", 36439626319285, "b32776af-28c0-4283-971c-92ac48c01afe", shopeeCreateOrderPoster, shopeeUpdateOrderPoster, shopeeTimeSlotAPI)
+	svc := shopee.NewShopeeService(100190, "57e08ead78cf63721eed92911f2dfe8a1a1152ebc880877ceae96e406c16dbab", 36439626319285, "b32776af-28c0-4283-971c-92ac48c01afe", shopeeCreateOrderPoster, shopeeUpdateOrderPoster, shopeeCancelOrderPoster, shopeeTimeSlotAPI)
 	trackingNo, err := svc.CreateOrder(deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,

@@ -14,6 +14,7 @@ import (
 var (
 	_ deliverypartnerconnectionlib.OrderCreator = (*shopeeService)(nil)
 	_ deliverypartnerconnectionlib.OrderUpdator = (*shopeeService)(nil)
+	_ deliverypartnerconnectionlib.OrderDeleter = (*shopeeService)(nil)
 )
 
 type shopeeService struct {
@@ -26,6 +27,7 @@ type shopeeService struct {
 	randomFunc           func() int64
 	shopeeCreateOrderAPI ShoppeeCreateOrderAPI
 	shopeeUpdateOrderAPI ShopeeUpdateOrderAPI
+	ShopeeCancelOrderAPI ShopeeCancelOrderAPI
 	shopeeTimeSlotAPI    ShopeePickUpTimeAPI
 }
 
@@ -38,6 +40,7 @@ func NewShopeeService(
 	userSecret string,
 	shopeeCreateOrderAPI ShoppeeCreateOrderAPI,
 	shopeeUpdateOrderAPI ShopeeUpdateOrderAPI,
+	ShopeeCancelOrderAPI ShopeeCancelOrderAPI,
 	shopeeTimeSlotAPI ShopeePickUpTimeAPI,
 	options ...ShopeeServiceOption,
 ) *shopeeService {
@@ -51,6 +54,7 @@ func NewShopeeService(
 		randomFunc:           secureRandomInt64,
 		shopeeCreateOrderAPI: shopeeCreateOrderAPI,
 		shopeeUpdateOrderAPI: shopeeUpdateOrderAPI,
+		ShopeeCancelOrderAPI: ShopeeCancelOrderAPI,
 		shopeeTimeSlotAPI:    shopeeTimeSlotAPI,
 	}
 
@@ -254,6 +258,32 @@ func (f *shopeeService) UpdateOrder(trackingNo string, order deliverypartnerconn
 			"timestamp":    strconv.FormatInt(timeStamp, 10),
 			"random-num":   strconv.FormatInt(randomNumForRequest, 10),
 		}, updateOrderRequest,
+	)
+
+	return nil
+}
+
+func (f *shopeeService) DeleteOrder(trackingNo string) error {
+	randomNumForRequest := f.randomFunc()
+
+	cancelOrderRequest := CancelOrderRequest{
+		UserID:         f.userID,
+		UserSecret:     f.userSecret,
+		TrackingNoList: []string{trackingNo},
+	}
+
+	cancelOrderRequestBytes, _ := json.Marshal(cancelOrderRequest)
+
+	timeStamp := f.unixFunc()
+	_, _ = f.ShopeeCancelOrderAPI.Post(
+		"/open/api/v1/order/batch_cancel_order",
+		map[string]string{
+			"Content-Type": "application/json",
+			"check-sign":   f.checkSignFunc(timeStamp, randomNumForRequest, cancelOrderRequestBytes),
+			"app-id":       strconv.FormatUint(f.appID, 10),
+			"timestamp":    strconv.FormatInt(timeStamp, 10),
+			"random-num":   strconv.FormatInt(randomNumForRequest, 10),
+		}, cancelOrderRequest,
 	)
 
 	return nil
