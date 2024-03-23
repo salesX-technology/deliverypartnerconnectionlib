@@ -21,11 +21,29 @@ import (
 )
 
 func main() {
+	fCreate := httpclient.NewHTTPFormPoster[flash.FlashCreateOrderAPIResponse]("https://open-api-tra.flashexpress.com", http.DefaultClient)
+	fUpdate := httpclient.NewHTTPFormPoster[flash.FlashOrderUpdateAPIResponse]("https://open-api-tra.flashexpress.com", http.DefaultClient)
+	fDelete := httpclient.NewHTTPFormPoster[flash.FlashOrderDeleteAPIResponse]("https://open-api-tra.flashexpress.com", http.DefaultClient)
+	fs := flash.NewFlashService(fCreate, fUpdate, fDelete, "8db711e11b3fe34f793444d6f2b4679be9da45446fbb82b84e40e90e1868ed75", "AA2315")
+
+	dpl := deliverypartnerconnectionlib.New(
+		map[string]deliverypartnerconnectionlib.OrderCreator{
+			"FLASH": fs,
+		},
+		map[string]deliverypartnerconnectionlib.OrderUpdator{
+			"FLASH": fs,
+		},
+		map[string]deliverypartnerconnectionlib.OrderDeleter{
+			"FLASH": fs,
+		})
+
+	// flashCreateOrderExample(dpl)
+	flashDeleteOrderExample(dpl)
+
 	// shopeeCreateOrderExample()
 	// fmt.Print("\nshopeeCreateOrderExample\n")
 	// shopeeCreateOrderExample()
 	// fmt.Print("\nflashCreateOrderExample\n")
-	// flashCreateOrderExample()
 
 	// z := time.Now().Unix()
 	// r := rand.Int63()
@@ -36,7 +54,7 @@ func main() {
 	// flashUpdateOrderExample()
 	// shopeeUpdateOrderExample()
 	// dhlCreateOrderExample()
-	dhlDeleteOrderExample()
+	// dhlDeleteOrderExample()
 }
 
 func shopeeCreateOrderExample() {
@@ -172,11 +190,9 @@ func shopeeCreateOrderExample2() {
 	print(string(body))
 }
 
-func flashUpdateOrderExample() {
-	fCreate := httpclient.NewHTTPFormPoster[flash.FlashCreateOrderAPIResponse](http.DefaultClient)
-	fUpdate := httpclient.NewHTTPFormPoster[flash.FlashOrderUpdateAPIResponse](http.DefaultClient)
-	fs := flash.NewFlashService(fCreate, fUpdate, "8db711e11b3fe34f793444d6f2b4679be9da45446fbb82b84e40e90e1868ed75", "AA2315", "https://open-api-tra.flashexpress.com")
-	trackingNo, err := fs.CreateOrder(deliverypartnerconnectionlib.Order{
+func flashUpdateOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib) {
+
+	trackingNo, err := dpl.CreateOrder("FLASH", deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
 		Sender: deliverypartnerconnectionlib.OrderAddress{
@@ -201,7 +217,7 @@ func flashUpdateOrderExample() {
 	}
 
 	fmt.Printf("create order flash trackingNo: %s\n", trackingNo)
-	fs.UpdateOrder(trackingNo, deliverypartnerconnectionlib.Order{
+	dpl.UpdateOrder("FLASH", trackingNo, deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
 		Sender: deliverypartnerconnectionlib.OrderAddress{
@@ -223,11 +239,8 @@ func flashUpdateOrderExample() {
 	})
 }
 
-func flashCreateOrderExample() {
-	fCreate := httpclient.NewHTTPFormPoster[flash.FlashCreateOrderAPIResponse](http.DefaultClient)
-	fUpdate := httpclient.NewHTTPFormPoster[flash.FlashOrderUpdateAPIResponse](http.DefaultClient)
-	fs := flash.NewFlashService(fCreate, fUpdate, "8db711e11b3fe34f793444d6f2b4679be9da45446fbb82b84e40e90e1868ed75", "AA2315", "https://open-api-tra.flashexpress.com")
-	trackingNo, err := fs.CreateOrder(deliverypartnerconnectionlib.Order{
+func flashCreateOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib) {
+	trackingNo, err := dpl.CreateOrder("FLASH", deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
 		Sender: deliverypartnerconnectionlib.OrderAddress{
@@ -359,4 +372,8 @@ func dhlDeleteOrderExample() {
 
 	err := dp.DeleteOrder("DHL", "THHSU123")
 	fmt.Printf("dhl err: %v\n", err)
+}
+
+func flashDeleteOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib) {
+	dpl.DeleteOrder("FLASH", "TH4714C6DB0A")
 }

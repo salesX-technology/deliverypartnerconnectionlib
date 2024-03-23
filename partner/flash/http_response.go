@@ -10,3 +10,6 @@ type FlasFlashCreateOrderAPIResponseData struct {
 
 type FlashOrderUpdateAPIResponse struct {
 }
+
+type FlashOrderDeleteAPIResponse struct {
+}

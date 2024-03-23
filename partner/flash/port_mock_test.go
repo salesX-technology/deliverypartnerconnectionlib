@@ -39,18 +39,18 @@ func (m *MockFlashCreateOrderAPI) EXPECT() *MockFlashCreateOrderAPIMockRecorder 
 }
 
 // PostForm mocks base method.
-func (m *MockFlashCreateOrderAPI) PostForm(fullurl string, form map[string]string) (FlashCreateOrderAPIResponse, error) {
+func (m *MockFlashCreateOrderAPI) PostForm(endpoint string, form map[string]string) (FlashCreateOrderAPIResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PostForm", fullurl, form)
+	ret := m.ctrl.Call(m, "PostForm", endpoint, form)
 	ret0, _ := ret[0].(FlashCreateOrderAPIResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // PostForm indicates an expected call of PostForm.
-func (mr *MockFlashCreateOrderAPIMockRecorder) PostForm(fullurl, form any) *gomock.Call {
+func (mr *MockFlashCreateOrderAPIMockRecorder) PostForm(endpoint, form any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostForm", reflect.TypeOf((*MockFlashCreateOrderAPI)(nil).PostForm), fullurl, form)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostForm", reflect.TypeOf((*MockFlashCreateOrderAPI)(nil).PostForm), endpoint, form)
 }
 
 // MockFlashUpdateShipmentInfo is a mock of FlashUpdateShipmentInfo interface.
@@ -77,16 +77,54 @@ func (m *MockFlashUpdateShipmentInfo) EXPECT() *MockFlashUpdateShipmentInfoMockR
 }
 
 // PostForm mocks base method.
-func (m *MockFlashUpdateShipmentInfo) PostForm(fullurl string, form map[string]string) (FlashOrderUpdateAPIResponse, error) {
+func (m *MockFlashUpdateShipmentInfo) PostForm(endpoint string, form map[string]string) (FlashOrderUpdateAPIResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PostForm", fullurl, form)
+	ret := m.ctrl.Call(m, "PostForm", endpoint, form)
 	ret0, _ := ret[0].(FlashOrderUpdateAPIResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // PostForm indicates an expected call of PostForm.
-func (mr *MockFlashUpdateShipmentInfoMockRecorder) PostForm(fullurl, form any) *gomock.Call {
+func (mr *MockFlashUpdateShipmentInfoMockRecorder) PostForm(endpoint, form any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostForm", reflect.TypeOf((*MockFlashUpdateShipmentInfo)(nil).PostForm), fullurl, form)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostForm", reflect.TypeOf((*MockFlashUpdateShipmentInfo)(nil).PostForm), endpoint, form)
+}
+
+// MockFlashDeleteOrderAPI is a mock of FlashDeleteOrderAPI interface.
+type MockFlashDeleteOrderAPI struct {
+	ctrl     *gomock.Controller
+	recorder *MockFlashDeleteOrderAPIMockRecorder
+}
+
+// MockFlashDeleteOrderAPIMockRecorder is the mock recorder for MockFlashDeleteOrderAPI.
+type MockFlashDeleteOrderAPIMockRecorder struct {
+	mock *MockFlashDeleteOrderAPI
+}
+
+// NewMockFlashDeleteOrderAPI creates a new mock instance.
+func NewMockFlashDeleteOrderAPI(ctrl *gomock.Controller) *MockFlashDeleteOrderAPI {
+	mock := &MockFlashDeleteOrderAPI{ctrl: ctrl}
+	mock.recorder = &MockFlashDeleteOrderAPIMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockFlashDeleteOrderAPI) EXPECT() *MockFlashDeleteOrderAPIMockRecorder {
+	return m.recorder
+}
+
+// PostForm mocks base method.
+func (m *MockFlashDeleteOrderAPI) PostForm(endpoint string, form map[string]string) (FlashOrderDeleteAPIResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PostForm", endpoint, form)
+	ret0, _ := ret[0].(FlashOrderDeleteAPIResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PostForm indicates an expected call of PostForm.
+func (mr *MockFlashDeleteOrderAPIMockRecorder) PostForm(endpoint, form any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PostForm", reflect.TypeOf((*MockFlashDeleteOrderAPI)(nil).PostForm), endpoint, form)
 }

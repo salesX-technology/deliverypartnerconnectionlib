@@ -16,6 +16,7 @@ type FlashTestSuite struct {
 
 	mFlashCreateOrderAPI     *MockFlashCreateOrderAPI
 	mFlashUpdateShipmentInfo *MockFlashUpdateShipmentInfo
+	mFlashDeleteOrder        *MockFlashDeleteOrderAPI
 
 	service *flashService
 }
@@ -24,13 +25,14 @@ func (t *FlashTestSuite) SetupTest() {
 	t.ctrl = gomock.NewController(t.T())
 	t.mFlashCreateOrderAPI = NewMockFlashCreateOrderAPI(t.ctrl)
 	t.mFlashUpdateShipmentInfo = NewMockFlashUpdateShipmentInfo(t.ctrl)
+	t.mFlashDeleteOrder = NewMockFlashDeleteOrderAPI(t.ctrl)
 
 	t.service = NewFlashService(
 		t.mFlashCreateOrderAPI,
 		t.mFlashUpdateShipmentInfo,
+		t.mFlashDeleteOrder,
 		"secret",
 		"merchant",
-		"http://test.com",
 		WithNonceGenerator(func(int) string {
 			return "nonce"
 		}),
@@ -45,7 +47,7 @@ func TestFlashTestSuite(t *testing.T) {
 }
 
 func (t *FlashTestSuite) TestGivenNonCODOrderIsCreating_WhenCreateOrder_ThenCreateSuccess() {
-	t.mFlashCreateOrderAPI.EXPECT().PostForm("http://test.com/open/v3/orders", map[string]string{
+	t.mFlashCreateOrderAPI.EXPECT().PostForm("/open/v3/orders", map[string]string{
 		"articleCategory":  "99",
 		"codEnabled":       "0",
 		"dstCityName":      "สันทราย",
@@ -102,7 +104,7 @@ func (t *FlashTestSuite) TestGivenNonCODOrderIsCreating_WhenCreateOrder_ThenCrea
 }
 
 func (t *FlashTestSuite) TestGivenCODOrderIsCreating_WhenCreateOrder_ThenCreateSuccess() {
-	t.mFlashCreateOrderAPI.EXPECT().PostForm("http://test.com/open/v3/orders", map[string]string{
+	t.mFlashCreateOrderAPI.EXPECT().PostForm("/open/v3/orders", map[string]string{
 		"articleCategory":  "99",
 		"codEnabled":       "1",
 		"dstCityName":      "สันทราย",
@@ -159,7 +161,7 @@ func (t *FlashTestSuite) TestGivenCODOrderIsCreating_WhenCreateOrder_ThenCreateS
 }
 
 func (t *FlashTestSuite) TestHTTPPostFormIsFailed_WhenCreateOrder_ThenReturnError() {
-	t.mFlashCreateOrderAPI.EXPECT().PostForm("http://test.com/open/v3/orders", map[string]string{
+	t.mFlashCreateOrderAPI.EXPECT().PostForm("/open/v3/orders", map[string]string{
 		"articleCategory":  "99",
 		"codEnabled":       "1",
 		"dstCityName":      "สันทราย",
@@ -213,7 +215,7 @@ func (t *FlashTestSuite) TestHTTPPostFormIsFailed_WhenCreateOrder_ThenReturnErro
 
 func (t *FlashTestSuite) TestGivenNonCODOrderIsUpdating_WhenUpdateOrder_ThenUpdateSuccess() {
 	t.mFlashUpdateShipmentInfo.EXPECT().PostForm(
-		"http://test.com/open/v1/orders/modify",
+		"/open/v1/orders/modify",
 		map[string]string{
 			"mchId":            "merchant",
 			"nonceStr":         "nonce",
@@ -262,5 +264,16 @@ func (t *FlashTestSuite) TestGivenNonCODOrderIsUpdating_WhenUpdateOrder_ThenUpda
 		},
 	})
 
+	t.NoError(err)
+}
+
+func (t *FlashTestSuite) TestGivenFlashOrderIsExist_WhenDeleteOrder_ThenReturnSuccess() {
+	t.mFlashDeleteOrder.EXPECT().PostForm("/open/v1/orders/trackingNo/cancel", map[string]string{
+		"mchId":    "merchant",
+		"nonceStr": "nonce",
+		"sign":     "signature",
+	}).Return(FlashOrderDeleteAPIResponse{}, nil)
+
+	err := t.service.DeleteOrder("trackingNo")
 	t.NoError(err)
 }

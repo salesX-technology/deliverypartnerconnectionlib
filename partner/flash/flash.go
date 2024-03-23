@@ -15,17 +15,17 @@ var (
 func NewFlashService(
 	flashCreateOrderAPI FlashCreateOrderAPI,
 	flashUpdateOrderAPI FlashUpdateShipmentInfo,
+	flashDeleteOrderaPI FlashDeleteOrderAPI,
 	secretKey string,
 	merchantID string,
-	baseURL string,
 	options ...FlashServiceOption,
 ) *flashService {
 	fs := &flashService{
 		flashCreateOrderAPI: flashCreateOrderAPI,
 		flashUpdateOrderAPI: flashUpdateOrderAPI,
+		flashDeleteOrderaPI: flashDeleteOrderaPI,
 		secretKey:           secretKey,
 		merchantID:          merchantID,
-		baseURL:             baseURL,
 		nonceGenerator:      generateNonceStr,
 		signatureGenerator:  generateSignature,
 	}
@@ -54,6 +54,7 @@ func WithSignatureGenerator(sg signatureGeneratorFunc) FlashServiceOption {
 type flashService struct {
 	flashCreateOrderAPI FlashCreateOrderAPI
 	flashUpdateOrderAPI FlashUpdateShipmentInfo
+	flashDeleteOrderaPI FlashDeleteOrderAPI
 	secretKey           string
 	merchantID          string
 	baseURL             string
@@ -103,7 +104,7 @@ func (f *flashService) CreateOrder(order deliverypartnerconnectionlib.Order) (st
 
 	keyedOrderInfo["sign"] = plainSignature
 
-	response, err := f.flashCreateOrderAPI.PostForm(f.baseURL+"/open/v3/orders", keyedOrderInfo)
+	response, err := f.flashCreateOrderAPI.PostForm("/open/v3/orders", keyedOrderInfo)
 	if err != nil {
 		return "", fmt.Errorf("failed to create order with flash: %s", err)
 	}
@@ -153,5 +154,17 @@ func (f *flashService) UpdateOrder(trackingNo string, order deliverypartnerconne
 }
 
 func (f *flashService) DeleteOrder(trackingNo string) error {
+	nonceStr := f.nonceGenerator(32)
+	deleteForm := map[string]string{
+		"mchId":    f.merchantID,
+		"nonceStr": nonceStr,
+	}
+
+	plainSignature := f.signatureGenerator(deleteForm, f.secretKey)
+
+	deleteForm["sign"] = plainSignature
+
+	_, _ = f.flashDeleteOrderaPI.PostForm("/open/v1/orders/"+trackingNo+"/cancel", deleteForm)
+
 	return nil
 }

@@ -20,7 +20,7 @@ type DeliveryPartnerConnectionTestSuite struct {
 
 	mAnyOrderDeleter *MockOrderDeleter
 
-	service *deliveryPartnerConnectionLib
+	service *DeliveryPartnerConnectionLib
 }
 
 func (t *DeliveryPartnerConnectionTestSuite) SetupTest() {

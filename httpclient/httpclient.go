@@ -12,17 +12,19 @@ import (
 )
 
 type httpFormPoster[ResponseBody any] struct {
-	client *netHTTP.Client
+	baseURL string
+	client  *netHTTP.Client
 }
 
-func NewHTTPFormPoster[ResponseBody any](client *netHTTP.Client) *httpFormPoster[ResponseBody] {
+func NewHTTPFormPoster[ResponseBody any](baseURL string, client *netHTTP.Client) *httpFormPoster[ResponseBody] {
 	return &httpFormPoster[ResponseBody]{
-		client: client,
+		client:  client,
+		baseURL: baseURL,
 	}
 }
 
-func (h *httpFormPoster[ResponseBody]) PostForm(fullurl string, form map[string]string) (ResponseBody, error) {
-	fmt.Printf("making request to %s\n", fullurl)
+func (h *httpFormPoster[ResponseBody]) PostForm(endpoint string, form map[string]string) (ResponseBody, error) {
+	fmt.Printf("making request to %s\n", h.baseURL+endpoint)
 	fmt.Printf("request: \n%s\n\n", form)
 
 	var responseBodyModel ResponseBody
@@ -31,7 +33,7 @@ func (h *httpFormPoster[ResponseBody]) PostForm(fullurl string, form map[string]
 		data.Set(k, v)
 	}
 
-	req, err := netHTTP.NewRequest("POST", fullurl, bytes.NewBufferString(data.Encode()))
+	req, err := netHTTP.NewRequest("POST", h.baseURL+endpoint, bytes.NewBufferString(data.Encode()))
 	if err != nil {
 		return responseBodyModel, fmt.Errorf("error creating request: %w", err)
 	}

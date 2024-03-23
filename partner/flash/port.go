@@ -3,9 +3,13 @@
 package flash
 
 type FlashCreateOrderAPI interface {
-	PostForm(fullurl string, form map[string]string) (FlashCreateOrderAPIResponse, error)
+	PostForm(endpoint string, form map[string]string) (FlashCreateOrderAPIResponse, error)
 }
 
 type FlashUpdateShipmentInfo interface {
-	PostForm(fullurl string, form map[string]string) (FlashOrderUpdateAPIResponse, error)
+	PostForm(endpoint string, form map[string]string) (FlashOrderUpdateAPIResponse, error)
+}
+
+type FlashDeleteOrderAPI interface {
+	PostForm(endpoint string, form map[string]string) (FlashOrderDeleteAPIResponse, error)
 }
