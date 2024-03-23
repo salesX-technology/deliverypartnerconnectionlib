@@ -15,6 +15,7 @@ import (
 
 	"github.com/salesX-technology/deliverypartnerconnectionlib"
 	"github.com/salesX-technology/deliverypartnerconnectionlib/httpclient"
+	"github.com/salesX-technology/deliverypartnerconnectionlib/partner/dhl"
 	"github.com/salesX-technology/deliverypartnerconnectionlib/partner/flash"
 	"github.com/salesX-technology/deliverypartnerconnectionlib/partner/shopee"
 )
@@ -33,7 +34,8 @@ func main() {
 	// fmt.Println(x)
 	// fmt.Println(y)
 	// flashUpdateOrderExample()
-	shopeeUpdateOrderExample()
+	// shopeeUpdateOrderExample()
+	dhlCreateOrderExample()
 }
 
 func shopeeCreateOrderExample() {
@@ -169,10 +171,6 @@ func shopeeCreateOrderExample2() {
 	print(string(body))
 }
 
-func dhlCreateOrderExample() {
-
-}
-
 func flashUpdateOrderExample() {
 	fCreate := httpclient.NewHTTPFormPoster[flash.FlashCreateOrderAPIResponse](http.DefaultClient)
 	fUpdate := httpclient.NewHTTPFormPoster[flash.FlashOrderUpdateAPIResponse](http.DefaultClient)
@@ -284,4 +282,45 @@ func makeSignarureGenerator(appID uint64, secret string) func(timestamp, randomI
 
 		return hex.EncodeToString(h.Sum(nil))
 	}
+}
+
+func dhlCreateOrderExample() {
+
+	dhlAuthenAPI := httpclient.NewHTTPGetter[dhl.DHLAuthenticationAPIRequest, dhl.DHLAuthenticationAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v1/OAuth/AccessToken", map[string]string{})
+	auth := dhl.NewDHLAuthenticator(dhlAuthenAPI, "MTMwMTY0NzIzNw==", "customerpassword@2403790402")
+
+	dhlCreateOrderAPI := httpclient.NewHTTPPoster[dhl.DHLCreateOrderAPIRequest, dhl.DHLCreateOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v3/Shipment", map[string]string{})
+	svc := dhl.NewDHLService(auth, dhlCreateOrderAPI, dhl.DHLAPIConfig{
+		PickupAccountID: "5299060260",
+		SoldToAccountID: "5299060260",
+	})
+
+	dp := deliverypartnerconnectionlib.New(map[string]deliverypartnerconnectionlib.OrderCreator{
+		"DHL": svc,
+	})
+
+	tracking, err := dp.CreateOrder("DHL", deliverypartnerconnectionlib.Order{
+		ID:           "125",
+		WeightInGram: 1000,
+		IsCOD:        false,
+		Sender: deliverypartnerconnectionlib.OrderAddress{
+			Name:          "John Wick",
+			AddressDetail: "dashi",
+			District:      "อำเภอเมืองบึงกาฬ",
+			Province:      "จังหวัดบึงกาฬ",
+			Phone:         "66898765432",
+			PostalCode:    "38000",
+		},
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
+			Name:          "น้ำพริกแม่อำพร",
+			AddressDetail: "sdfsdf",
+			District:      "อำเภอเมืองบึงกาฬ",
+			Province:      "จังหวัดบึงกาฬ",
+			Phone:         "0812345679",
+			PostalCode:    "50210",
+		},
+	})
+
+	fmt.Printf("dhl trackingNo: %s\n", tracking)
+	fmt.Printf("dhl err: %v\n", err)
 }

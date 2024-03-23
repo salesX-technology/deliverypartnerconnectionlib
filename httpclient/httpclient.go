@@ -22,7 +22,8 @@ func NewHTTPFormPoster[ResponseBody any](client *netHTTP.Client) *httpFormPoster
 }
 
 func (h *httpFormPoster[ResponseBody]) PostForm(fullurl string, form map[string]string) (ResponseBody, error) {
-	fmt.Printf("request: %s\n\n", form)
+	fmt.Printf("making request to %s\n", fullurl)
+	fmt.Printf("request: \n%s\n\n", form)
 
 	var responseBodyModel ResponseBody
 	data := url.Values{}
@@ -53,7 +54,7 @@ func (h *httpFormPoster[ResponseBody]) PostForm(fullurl string, form map[string]
 		return responseBodyModel, fmt.Errorf("error unmarshalling response body: %w", err)
 	}
 
-	fmt.Printf("body: %s\n\n", string(body))
+	fmt.Printf("body: \n%s\n\n", string(body))
 	return responseBodyModel, nil
 }
 
@@ -74,11 +75,12 @@ func NewHTTPPoster[Request any, Response any](httpClient *netHTTP.Client, fullUR
 func (i httpPosterInstance[Request, Response]) Post(headers map[string]string, request Request) (Response, error) {
 	var m Response
 
+	fmt.Printf("making request to %s\n", i.fullURL)
 	reqBody, err := json.Marshal(request)
 	if err != nil {
 		return m, fmt.Errorf("mashal request error: %s", err)
 	}
-	fmt.Printf("request: %s\n", string(reqBody))
+	fmt.Printf("request: \n%s\n", string(reqBody))
 
 	req, err := netHTTP.NewRequest(netHTTP.MethodPost, i.fullURL, bytes.NewReader(reqBody))
 	if err != nil {
@@ -112,6 +114,54 @@ func (i httpPosterInstance[Request, Response]) Post(headers map[string]string, r
 		return m, fmt.Errorf("error occurred when unmarshalling response body: %s", err)
 	}
 
-	fmt.Printf("response: %s\n", string(responseBody))
+	fmt.Printf("response: \n%s\n", string(responseBody))
+	return m, nil
+}
+
+func NewHTTPGetter[Request any, Response any](httpClient *netHTTP.Client, fullURL string, defaultHeader map[string]string) httpPosterInstance[Request, Response] {
+	return httpPosterInstance[Request, Response]{
+		httpClient:    httpClient,
+		fullURL:       fullURL,
+		defaultHeader: defaultHeader,
+	}
+}
+
+func (i httpPosterInstance[Request, Response]) Get(headers map[string]string, queryParam string, request Request) (Response, error) {
+	var m Response
+
+	fmt.Printf("making request to %s\n", i.fullURL+queryParam)
+	req, err := netHTTP.NewRequest(netHTTP.MethodGet, i.fullURL+queryParam, nil)
+	if err != nil {
+		return m, fmt.Errorf("error creating request: %s", err)
+	}
+
+	for hKey, kValue := range i.defaultHeader {
+		req.Header.Set(hKey, kValue)
+	}
+
+	for hKey, hValue := range headers {
+		req.Header.Set(hKey, hValue)
+	}
+
+	httpResponse, err := i.httpClient.Do(req)
+	if err != nil {
+		return m, fmt.Errorf("error sending request to %s: %v", i.fullURL, err)
+	}
+
+	defer httpResponse.Body.Close()
+	responseBody, err := io.ReadAll(httpResponse.Body)
+	if err != nil {
+		return m, fmt.Errorf("error reading response body: %s", err)
+	}
+
+	if httpResponse.StatusCode < 200 || httpResponse.StatusCode >= 300 {
+		return m, fmt.Errorf("request not successful with status code %d", httpResponse.StatusCode)
+	}
+
+	if err := json.Unmarshal(responseBody, &m); err != nil {
+		return m, fmt.Errorf("error occurred when unmarshalling response body: %s", err)
+	}
+
+	fmt.Printf("response: \n%s\n", string(responseBody))
 	return m, nil
 }
