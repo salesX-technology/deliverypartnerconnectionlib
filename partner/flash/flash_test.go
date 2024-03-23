@@ -74,10 +74,10 @@ func (t *FlashTestSuite) TestGivenNonCODOrderIsCreating_WhenCreateOrder_ThenCrea
 		},
 	}, nil)
 
-	trackingNo, err := t.service.CreateOrder(courierx.Order{
+	trackingNo, err := t.service.CreateOrder(deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
-		Sender: courierx.OrderAddress{
+		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "หอมรวม  create order test name",
 			AddressDetail: "example detail address",
 			SubDistrict:   "ขี้เหล็ก",
@@ -86,7 +86,7 @@ func (t *FlashTestSuite) TestGivenNonCODOrderIsCreating_WhenCreateOrder_ThenCrea
 			Phone:         "0123456789",
 			PostalCode:    "34000",
 		},
-		Receiver: courierx.OrderAddress{
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "น้ำพริกแม่อำพร",
 			AddressDetail: "example detail address",
 			SubDistrict:   "สันทรายน้อย",
@@ -131,10 +131,10 @@ func (t *FlashTestSuite) TestGivenCODOrderIsCreating_WhenCreateOrder_ThenCreateS
 		},
 	}, nil)
 
-	trackingNo, err := t.service.CreateOrder(courierx.Order{
+	trackingNo, err := t.service.CreateOrder(deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        true,
-		Sender: courierx.OrderAddress{
+		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "หอมรวม  create order test name",
 			AddressDetail: "example detail address",
 			SubDistrict:   "ขี้เหล็ก",
@@ -143,7 +143,7 @@ func (t *FlashTestSuite) TestGivenCODOrderIsCreating_WhenCreateOrder_ThenCreateS
 			Phone:         "0123456789",
 			PostalCode:    "34000",
 		},
-		Receiver: courierx.OrderAddress{
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "น้ำพริกแม่อำพร",
 			AddressDetail: "example detail address",
 			SubDistrict:   "สันทรายน้อย",
@@ -184,10 +184,10 @@ func (t *FlashTestSuite) TestHTTPPostFormIsFailed_WhenCreateOrder_ThenReturnErro
 		"sign":             "signature",
 	}).Return(FlashCreateOrderAPIResponse{}, errors.New("error"))
 
-	trackingNo, err := t.service.CreateOrder(courierx.Order{
+	trackingNo, err := t.service.CreateOrder(deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        true,
-		Sender: courierx.OrderAddress{
+		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "หอมรวม  create order test name",
 			AddressDetail: "example detail address",
 			SubDistrict:   "ขี้เหล็ก",
@@ -196,7 +196,7 @@ func (t *FlashTestSuite) TestHTTPPostFormIsFailed_WhenCreateOrder_ThenReturnErro
 			Phone:         "0123456789",
 			PostalCode:    "34000",
 		},
-		Receiver: courierx.OrderAddress{
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "น้ำพริกแม่อำพร",
 			AddressDetail: "example detail address",
 			SubDistrict:   "สันทรายน้อย",
@@ -239,10 +239,10 @@ func (t *FlashTestSuite) TestGivenNonCODOrderIsUpdating_WhenUpdateOrder_ThenUpda
 		},
 	).Return(FlashOrderUpdateAPIResponse{}, nil)
 
-	err := t.service.UpdateOrder("trackingNo", courierx.Order{
+	err := t.service.UpdateOrder("trackingNo", deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
-		Sender: courierx.OrderAddress{
+		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "หอมรวม  create order test name",
 			AddressDetail: "example detail address",
 			SubDistrict:   "ขี้เหล็ก",
@@ -251,7 +251,7 @@ func (t *FlashTestSuite) TestGivenNonCODOrderIsUpdating_WhenUpdateOrder_ThenUpda
 			Phone:         "0123456789",
 			PostalCode:    "34000",
 		},
-		Receiver: courierx.OrderAddress{
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "น้ำพริกแม่อำพร",
 			AddressDetail: "example detail address",
 			SubDistrict:   "สันทรายน้อย",

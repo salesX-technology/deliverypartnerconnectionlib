@@ -1,4 +1,4 @@
-package courierx
+package deliverypartnerconnectionlib
 
 type Order struct {
 	ID           string

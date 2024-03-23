@@ -42,10 +42,10 @@ func shopeeCreateOrderExample() {
 	shopeeUpdateOrderPoster := httpclient.NewHTTPPoster[shopee.UpdateOrderRequest, shopee.UpdateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th/open/api/v1/order/batch_update_order", map[string]string{})
 
 	svc := shopee.NewShopeeService(100190, "57e08ead78cf63721eed92911f2dfe8a1a1152ebc880877ceae96e406c16dbab", 36439626319285, "b32776af-28c0-4283-971c-92ac48c01afe", shopeeCreateOrderPoster, shopeeUpdateOrderPoster, shopeeTimeSlotAPI)
-	trackingNo, err := svc.CreateOrder(courierx.Order{
+	trackingNo, err := svc.CreateOrder(deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
-		Sender: courierx.OrderAddress{
+		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "John Wick",
 			AddressDetail: "dashi",
 			District:      "อำเภอเมืองบึงกาฬ",
@@ -53,7 +53,7 @@ func shopeeCreateOrderExample() {
 			Phone:         "66898765432",
 			PostalCode:    "38000",
 		},
-		Receiver: courierx.OrderAddress{
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "น้ำพริกแม่อำพร",
 			AddressDetail: "sdfsdf",
 			District:      "อำเภอเมืองบึงกาฬ",
@@ -75,10 +75,10 @@ func shopeeUpdateOrderExample() {
 	shopeeUpdateOrderPoster := httpclient.NewHTTPPoster[shopee.UpdateOrderRequest, shopee.UpdateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th/open/api/v1/order/batch_update_order", map[string]string{})
 
 	svc := shopee.NewShopeeService(100190, "57e08ead78cf63721eed92911f2dfe8a1a1152ebc880877ceae96e406c16dbab", 36439626319285, "b32776af-28c0-4283-971c-92ac48c01afe", shopeeCreateOrderPoster, shopeeUpdateOrderPoster, shopeeTimeSlotAPI)
-	trackingNo, err := svc.CreateOrder(courierx.Order{
+	trackingNo, err := svc.CreateOrder(deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
-		Sender: courierx.OrderAddress{
+		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "John Wick",
 			AddressDetail: "dashi",
 			District:      "อำเภอเมืองบึงกาฬ",
@@ -86,7 +86,7 @@ func shopeeUpdateOrderExample() {
 			Phone:         "66898765432",
 			PostalCode:    "38000",
 		},
-		Receiver: courierx.OrderAddress{
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "น้ำพริกแม่อำพร",
 			AddressDetail: "sdfsdf",
 			District:      "อำเภอเมืองบึงกาฬ",
@@ -101,10 +101,10 @@ func shopeeUpdateOrderExample() {
 
 	fmt.Printf("shopee trackingNo: %s\n", trackingNo)
 
-	svc.UpdateOrder(trackingNo, courierx.Order{
+	svc.UpdateOrder(trackingNo, deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
-		Sender: courierx.OrderAddress{
+		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "NewJohn Wick",
 			AddressDetail: "Newdashi",
 			District:      "อำเภอเมืองบึงกาฬ",
@@ -112,7 +112,7 @@ func shopeeUpdateOrderExample() {
 			Phone:         "66898765432",
 			PostalCode:    "38000",
 		},
-		Receiver: courierx.OrderAddress{
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "Newน้ำพริกแม่อำพร",
 			AddressDetail: "New sdfsdf",
 			District:      "อำเภอเมืองบึงกาฬ",
@@ -177,10 +177,10 @@ func flashUpdateOrderExample() {
 	fCreate := httpclient.NewHTTPFormPoster[flash.FlashCreateOrderAPIResponse](http.DefaultClient)
 	fUpdate := httpclient.NewHTTPFormPoster[flash.FlashOrderUpdateAPIResponse](http.DefaultClient)
 	fs := flash.NewFlashService(fCreate, fUpdate, "8db711e11b3fe34f793444d6f2b4679be9da45446fbb82b84e40e90e1868ed75", "AA2315", "https://open-api-tra.flashexpress.com")
-	trackingNo, err := fs.CreateOrder(courierx.Order{
+	trackingNo, err := fs.CreateOrder(deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
-		Sender: courierx.OrderAddress{
+		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "หอมรวม  create order test name",
 			AddressDetail: "example detail address",
 			District:      "เมืองอุบลราชธานี",
@@ -188,7 +188,7 @@ func flashUpdateOrderExample() {
 			Phone:         "0123456789",
 			PostalCode:    "34000",
 		},
-		Receiver: courierx.OrderAddress{
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "น้ำพริกแม่อำพร",
 			AddressDetail: "example detail address",
 			District:      "สันทราย",
@@ -202,10 +202,10 @@ func flashUpdateOrderExample() {
 	}
 
 	fmt.Printf("create order flash trackingNo: %s\n", trackingNo)
-	fs.UpdateOrder(trackingNo, courierx.Order{
+	fs.UpdateOrder(trackingNo, deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
-		Sender: courierx.OrderAddress{
+		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "new หอมรวม  create order test name",
 			AddressDetail: "new example detail address",
 			District:      "เมืองอุบลราชธานี",
@@ -213,7 +213,7 @@ func flashUpdateOrderExample() {
 			Phone:         "0812345679",
 			PostalCode:    "34000",
 		},
-		Receiver: courierx.OrderAddress{
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "น้ำพริกแม่อำพร",
 			AddressDetail: "example detail address",
 			District:      "สันทราย",
@@ -228,10 +228,10 @@ func flashCreateOrderExample() {
 	fCreate := httpclient.NewHTTPFormPoster[flash.FlashCreateOrderAPIResponse](http.DefaultClient)
 	fUpdate := httpclient.NewHTTPFormPoster[flash.FlashOrderUpdateAPIResponse](http.DefaultClient)
 	fs := flash.NewFlashService(fCreate, fUpdate, "8db711e11b3fe34f793444d6f2b4679be9da45446fbb82b84e40e90e1868ed75", "AA2315", "https://open-api-tra.flashexpress.com")
-	trackingNo, err := fs.CreateOrder(courierx.Order{
+	trackingNo, err := fs.CreateOrder(deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
-		Sender: courierx.OrderAddress{
+		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "หอมรวม  create order test name",
 			AddressDetail: "example detail address",
 			District:      "เมืองอุบลราชธานี",
@@ -239,7 +239,7 @@ func flashCreateOrderExample() {
 			Phone:         "0123456789",
 			PostalCode:    "34000",
 		},
-		Receiver: courierx.OrderAddress{
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "น้ำพริกแม่อำพร",
 			AddressDetail: "example detail address",
 			District:      "สันทราย",

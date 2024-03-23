@@ -1,16 +1,16 @@
-package courierx
+package deliverypartnerconnectionlib
 
-type courierXService struct {
+type deliveryPartnerConnectionLib struct {
 	partnerCreateOrderAdaptor map[string]OrderCreator
 }
 
-func NewCourierXService(partnerCreateOrderAdaptor map[string]OrderCreator) *courierXService {
-	return &courierXService{
+func New(partnerCreateOrderAdaptor map[string]OrderCreator) *deliveryPartnerConnectionLib {
+	return &deliveryPartnerConnectionLib{
 		partnerCreateOrderAdaptor: partnerCreateOrderAdaptor,
 	}
 }
 
-func (c *courierXService) CreateOrder(partner string, order Order) (string, error) {
+func (c *deliveryPartnerConnectionLib) CreateOrder(partner string, order Order) (string, error) {
 	orderRefID, err := c.partnerCreateOrderAdaptor[partner].CreateOrder(order)
 	return orderRefID, err
 }

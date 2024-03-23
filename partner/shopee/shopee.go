@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	_ courierx.OrderCreator = (*shopeeService)(nil)
-	_ courierx.OrderUpdator = (*shopeeService)(nil)
+	_ deliverypartnerconnectionlib.OrderCreator = (*shopeeService)(nil)
+	_ deliverypartnerconnectionlib.OrderUpdator = (*shopeeService)(nil)
 )
 
 type shopeeService struct {
@@ -79,7 +79,7 @@ func WithUnixTimeFunc(unixFunc func() int64) ShopeeServiceOption {
 	}
 }
 
-func (f *shopeeService) CreateOrder(order courierx.Order) (string, error) {
+func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (string, error) {
 	randomNumForRequest := f.randomFunc()
 
 	timeStamp := f.unixFunc()
@@ -177,7 +177,7 @@ func GenerateCheckSign(appId uint64, secret string, timestamp, random int64, pay
 	return checkSign, nil
 }
 
-func (f *shopeeService) UpdateOrder(trackingNo string, order courierx.Order) error {
+func (f *shopeeService) UpdateOrder(trackingNo string, order deliverypartnerconnectionlib.Order) error {
 	randomNumForRequest := f.randomFunc()
 
 	timeSlotRequest := TimeSlotRequest{

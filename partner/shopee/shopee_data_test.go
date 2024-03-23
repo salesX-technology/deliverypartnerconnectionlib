@@ -2,11 +2,11 @@ package shopee
 
 import "github.com/salesX-technology/deliverypartnerconnectionlib"
 
-var aValidNonCODOrder = courierx.Order{
+var aValidNonCODOrder = deliverypartnerconnectionlib.Order{
 	ID:           "order_id",
 	WeightInGram: 1000,
 	IsCOD:        false,
-	Sender: courierx.OrderAddress{
+	Sender: deliverypartnerconnectionlib.OrderAddress{
 		Name:          "sender_name",
 		AddressDetail: "sender_address",
 		SubDistrict:   "sender_sub_district",
@@ -15,7 +15,7 @@ var aValidNonCODOrder = courierx.Order{
 		Phone:         "sender_phone",
 		PostalCode:    "sender_postal_code",
 	},
-	Receiver: courierx.OrderAddress{
+	Receiver: deliverypartnerconnectionlib.OrderAddress{
 		Name:          "receiver_name",
 		AddressDetail: "receiver_address",
 		SubDistrict:   "receiver_sub_district",

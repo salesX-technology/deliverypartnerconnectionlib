@@ -1,4 +1,4 @@
-package courierx
+package deliverypartnerconnectionlib
 
 var aValidOrder = Order{
 	WeightInGram: 1000,

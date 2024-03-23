@@ -1,4 +1,4 @@
-package courierx
+package deliverypartnerconnectionlib
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-type CourierXTestSuite struct {
+type DeliveryPartnerConnectionTestSuite struct {
 	suite.Suite
 	ctrl *gomock.Controller
 
@@ -15,27 +15,27 @@ type CourierXTestSuite struct {
 	mShopeeOrderCreator *MockOrderCreator
 	mDHLOrderCreator    *MockOrderCreator
 
-	service *courierXService
+	service *deliveryPartnerConnectionLib
 }
 
-func (t *CourierXTestSuite) SetupTest() {
+func (t *DeliveryPartnerConnectionTestSuite) SetupTest() {
 	t.ctrl = gomock.NewController(t.T())
 	t.mFlashOrderCreator = NewMockOrderCreator(t.ctrl)
 	t.mShopeeOrderCreator = NewMockOrderCreator(t.ctrl)
 	t.mDHLOrderCreator = NewMockOrderCreator(t.ctrl)
 
-	t.service = NewCourierXService(map[string]OrderCreator{
+	t.service = New(map[string]OrderCreator{
 		"FLASH":  t.mFlashOrderCreator,
 		"SHOPEE": t.mShopeeOrderCreator,
 		"DHL":    t.mDHLOrderCreator,
 	})
 }
 
-func TestCourierXTestSuite(t *testing.T) {
-	suite.Run(t, new(CourierXTestSuite))
+func TestSuiteRun(t *testing.T) {
+	suite.Run(t, new(DeliveryPartnerConnectionTestSuite))
 }
 
-func (t *CourierXTestSuite) TestGivenFlashOrderIsCreating_WhenCreateOrder_ThenCallAdaptorFlashCreateOrderAndReturnSuccess() {
+func (t *DeliveryPartnerConnectionTestSuite) TestGivenFlashOrderIsCreating_WhenCreateOrder_ThenCallAdaptorFlashCreateOrderAndReturnSuccess() {
 	t.mFlashOrderCreator.EXPECT().CreateOrder(aValidOrder).Return("refID", nil)
 
 	orderRefID, err := t.service.CreateOrder("FLASH", aValidOrder)
@@ -44,7 +44,7 @@ func (t *CourierXTestSuite) TestGivenFlashOrderIsCreating_WhenCreateOrder_ThenCa
 	t.Nil(err)
 }
 
-func (t *CourierXTestSuite) TestGivenShopeeOrderIsCreating_WhenCreateOrder_ThenCallAdaptorShopeeCreateOrderAndReturnSuccess() {
+func (t *DeliveryPartnerConnectionTestSuite) TestGivenShopeeOrderIsCreating_WhenCreateOrder_ThenCallAdaptorShopeeCreateOrderAndReturnSuccess() {
 	t.mShopeeOrderCreator.EXPECT().CreateOrder(aValidOrder).Return("refID", nil)
 
 	orderRefID, err := t.service.CreateOrder("SHOPEE", aValidOrder)
@@ -53,7 +53,7 @@ func (t *CourierXTestSuite) TestGivenShopeeOrderIsCreating_WhenCreateOrder_ThenC
 	t.Nil(err)
 }
 
-func (t *CourierXTestSuite) TestGivenDHLOrderIsCreating_WhenCreateOrder_ThenCallAdaptorDHLCreateOrderAndReturnSuccess() {
+func (t *DeliveryPartnerConnectionTestSuite) TestGivenDHLOrderIsCreating_WhenCreateOrder_ThenCallAdaptorDHLCreateOrderAndReturnSuccess() {
 	t.mDHLOrderCreator.EXPECT().CreateOrder(aValidOrder).Return("refID", nil)
 
 	orderRefID, err := t.service.CreateOrder("DHL", aValidOrder)

@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	_ courierx.OrderCreator = (*flashService)(nil)
-	_ courierx.OrderUpdator = (*flashService)(nil)
+	_ deliverypartnerconnectionlib.OrderCreator = (*flashService)(nil)
+	_ deliverypartnerconnectionlib.OrderUpdator = (*flashService)(nil)
 )
 
 func NewFlashService(
@@ -63,7 +63,7 @@ type flashService struct {
 type nonceGeneratorFunc func(int) string
 type signatureGeneratorFunc func(map[string]string, string) string
 
-func (f *flashService) CreateOrder(order courierx.Order) (string, error) {
+func (f *flashService) CreateOrder(order deliverypartnerconnectionlib.Order) (string, error) {
 	articleCategory := "99"
 	expressCategory := "1"
 	insured := "0"
@@ -110,7 +110,7 @@ func (f *flashService) CreateOrder(order courierx.Order) (string, error) {
 	return response.Data.PNO, nil
 }
 
-func (f *flashService) UpdateOrder(trackingNo string, order courierx.Order) error {
+func (f *flashService) UpdateOrder(trackingNo string, order deliverypartnerconnectionlib.Order) error {
 	insured := "0"
 	codEnabled := "0"
 	if order.IsCOD {

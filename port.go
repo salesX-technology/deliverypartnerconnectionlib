@@ -1,6 +1,6 @@
 //go:generate bash -c "mockgen -source=port.go -package=$(go list -f '{{.Name}}') -destination=port_mock_test.go"
 
-package courierx
+package deliverypartnerconnectionlib
 
 type OrderCreator interface {
 	CreateOrder(order Order) (trackingNo string, err error)

@@ -9,6 +9,6 @@ func NewDHLService() *dhlService {
 	return &dhlService{}
 }
 
-func (f *dhlService) CreateOrder(order courierx.Order) (string, error) {
+func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (string, error) {
 	return "", nil
 }
