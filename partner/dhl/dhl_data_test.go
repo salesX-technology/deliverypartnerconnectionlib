@@ -3,7 +3,7 @@ package dhl
 import "github.com/salesX-technology/deliverypartnerconnectionlib"
 
 var aValidNonCODOrder = deliverypartnerconnectionlib.Order{
-	ID:           "order_id",
+	ID:           "THHSU0001",
 	WeightInGram: 1000,
 	IsCOD:        false,
 	Sender: deliverypartnerconnectionlib.OrderAddress{

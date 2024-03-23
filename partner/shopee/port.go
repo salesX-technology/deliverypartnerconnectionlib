@@ -2,13 +2,13 @@
 package shopee
 
 type ShoppeeCreateOrderAPI interface {
-	Post(headers map[string]string, request CreateOrderRequest) (CreateOrderResponse, error)
+	Post(endpoint string, headers map[string]string, request CreateOrderRequest) (CreateOrderResponse, error)
 }
 
 type ShopeePickUpTimeAPI interface {
-	Post(headers map[string]string, request TimeSlotRequest) (TimeSlotResponse, error)
+	Post(endpoint string, headers map[string]string, request TimeSlotRequest) (TimeSlotResponse, error)
 }
 
 type ShopeeUpdateOrderAPI interface {
-	Post(headers map[string]string, request UpdateOrderRequest) (UpdateOrderResponse, error)
+	Post(endpoint string, headers map[string]string, request UpdateOrderRequest) (UpdateOrderResponse, error)
 }

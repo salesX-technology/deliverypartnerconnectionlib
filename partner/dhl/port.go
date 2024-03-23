@@ -6,13 +6,13 @@ type Authenticator interface {
 }
 
 type DHLOrderCreatorAPI interface {
-	Post(headers map[string]string, request DHLCreateOrderAPIRequest) (DHLCreateOrderAPIResponse, error)
+	Post(endpoint string, headers map[string]string, request DHLCreateOrderAPIRequest) (DHLCreateOrderAPIResponse, error)
 }
 
 type DHLAuthenticationAPI interface {
-	Get(headers map[string]string, queryParam string, request DHLAuthenticationAPIRequest) (DHLAuthenticationAPIResponse, error)
+	Get(endpoint string, headers map[string]string, request DHLAuthenticationAPIRequest) (DHLAuthenticationAPIResponse, error)
 }
 
 type DHLOrderDeletorAPI interface {
-	Post(headers map[string]string, request DHLDeleteOrderAPIRequest) (DHLDeleteOrderAPIResponse, error)
+	Post(endpoint string, headers map[string]string, request DHLDeleteOrderAPIRequest) (DHLDeleteOrderAPIResponse, error)
 }

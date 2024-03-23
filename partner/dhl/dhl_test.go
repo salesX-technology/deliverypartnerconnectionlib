@@ -48,7 +48,7 @@ func TestSuiteRun(t *testing.T) {
 
 func (t *DHLServiceTestSuite) TestGivenOrderIsCreating_WhenCreateOrder_ThenReturnSuccess() {
 	t.mAuthenticator.EXPECT().Authenticate().Return("accessToken", nil)
-	t.mDHLOrderCreatorAPI.EXPECT().Post(map[string]string{
+	t.mDHLOrderCreatorAPI.EXPECT().Post("/rest/v3/Shipment", map[string]string{
 		"Content-Type": "application/json",
 	}, DHLCreateOrderAPIRequest{
 		ManifestRequest: ManifestRequest{
@@ -103,7 +103,7 @@ func (t *DHLServiceTestSuite) TestGivenOrderIsCreating_WhenCreateOrder_ThenRetur
 			BD: DHLCreateOrderAPIResponseBD{
 				ShipmentItems: []DHLCreateOrderAPIResponseBDShipmentItem{
 					{
-						DeliveryConfirmationNo: "trackingNo",
+						DeliveryConfirmationNo: "DeliveryConfirmationNo",
 					},
 				},
 			},
@@ -118,27 +118,29 @@ func (t *DHLServiceTestSuite) TestGivenOrderIsCreating_WhenCreateOrder_ThenRetur
 func (t *DHLServiceTestSuite) TestGivenOrderIsDeleting_WhenDeleteOrder_ThenReturnSuccess() {
 	t.mAuthenticator.EXPECT().Authenticate().Return("accessToken", nil)
 
-	t.mDHLOrderDeletorAPI.EXPECT().Post(map[string]string{
-		"Content-Type": "application/json",
-	}, DHLDeleteOrderAPIRequest{
-		DeleteShipmentReq: DHLDeleteOrderAPIRequestDeleteShipmentRequest{
-			HDR: DHLDeleteOrderAPIRequestHDR{
-				MessageType:     "DELETESHIPMENT",
-				MessageDateTime: "2021-01-01T00:00:00+07:00",
-				AccessToken:     "accessToken",
-				MessageVersion:  "1.0",
-			},
-			BD: DHLDeleteOrderAPIRequestBD{
-				SoldToAccountID: "SoldToAccountID",
-				PickupAccountID: "PickupAccountID",
-				ShipmentItems: []DHLDeleteOrderAPIRequestShipmentItem{
-					{
-						ShipmentID: "trackingNo",
+	t.mDHLOrderDeletorAPI.EXPECT().Post(
+		"/rest/v2/Label/Delete",
+		map[string]string{
+			"Content-Type": "application/json",
+		}, DHLDeleteOrderAPIRequest{
+			DeleteShipmentReq: DHLDeleteOrderAPIRequestDeleteShipmentRequest{
+				HDR: DHLDeleteOrderAPIRequestHDR{
+					MessageType:     "DELETESHIPMENT",
+					MessageDateTime: "2021-01-01T00:00:00+07:00",
+					AccessToken:     "accessToken",
+					MessageVersion:  "1.0",
+				},
+				BD: DHLDeleteOrderAPIRequestBD{
+					SoldToAccountID: "SoldToAccountID",
+					PickupAccountID: "PickupAccountID",
+					ShipmentItems: []DHLDeleteOrderAPIRequestShipmentItem{
+						{
+							ShipmentID: "trackingNo",
+						},
 					},
 				},
 			},
-		},
-	}).Return(DHLDeleteOrderAPIResponse{}, nil)
+		}).Return(DHLDeleteOrderAPIResponse{}, nil)
 
 	err := t.service.DeleteOrder("trackingNo")
 	t.Nil(err)

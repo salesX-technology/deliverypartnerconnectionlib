@@ -77,18 +77,18 @@ func (m *MockDHLOrderCreatorAPI) EXPECT() *MockDHLOrderCreatorAPIMockRecorder {
 }
 
 // Post mocks base method.
-func (m *MockDHLOrderCreatorAPI) Post(headers map[string]string, request DHLCreateOrderAPIRequest) (DHLCreateOrderAPIResponse, error) {
+func (m *MockDHLOrderCreatorAPI) Post(endpoint string, headers map[string]string, request DHLCreateOrderAPIRequest) (DHLCreateOrderAPIResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Post", headers, request)
+	ret := m.ctrl.Call(m, "Post", endpoint, headers, request)
 	ret0, _ := ret[0].(DHLCreateOrderAPIResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Post indicates an expected call of Post.
-func (mr *MockDHLOrderCreatorAPIMockRecorder) Post(headers, request any) *gomock.Call {
+func (mr *MockDHLOrderCreatorAPIMockRecorder) Post(endpoint, headers, request any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockDHLOrderCreatorAPI)(nil).Post), headers, request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockDHLOrderCreatorAPI)(nil).Post), endpoint, headers, request)
 }
 
 // MockDHLAuthenticationAPI is a mock of DHLAuthenticationAPI interface.
@@ -115,18 +115,18 @@ func (m *MockDHLAuthenticationAPI) EXPECT() *MockDHLAuthenticationAPIMockRecorde
 }
 
 // Get mocks base method.
-func (m *MockDHLAuthenticationAPI) Get(headers map[string]string, queryParam string, request DHLAuthenticationAPIRequest) (DHLAuthenticationAPIResponse, error) {
+func (m *MockDHLAuthenticationAPI) Get(endpoint string, headers map[string]string, request DHLAuthenticationAPIRequest) (DHLAuthenticationAPIResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", headers, queryParam, request)
+	ret := m.ctrl.Call(m, "Get", endpoint, headers, request)
 	ret0, _ := ret[0].(DHLAuthenticationAPIResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get.
-func (mr *MockDHLAuthenticationAPIMockRecorder) Get(headers, queryParam, request any) *gomock.Call {
+func (mr *MockDHLAuthenticationAPIMockRecorder) Get(endpoint, headers, request any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockDHLAuthenticationAPI)(nil).Get), headers, queryParam, request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockDHLAuthenticationAPI)(nil).Get), endpoint, headers, request)
 }
 
 // MockDHLOrderDeletorAPI is a mock of DHLOrderDeletorAPI interface.
@@ -153,16 +153,16 @@ func (m *MockDHLOrderDeletorAPI) EXPECT() *MockDHLOrderDeletorAPIMockRecorder {
 }
 
 // Post mocks base method.
-func (m *MockDHLOrderDeletorAPI) Post(headers map[string]string, request DHLDeleteOrderAPIRequest) (DHLDeleteOrderAPIResponse, error) {
+func (m *MockDHLOrderDeletorAPI) Post(endpoint string, headers map[string]string, request DHLDeleteOrderAPIRequest) (DHLDeleteOrderAPIResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Post", headers, request)
+	ret := m.ctrl.Call(m, "Post", endpoint, headers, request)
 	ret0, _ := ret[0].(DHLDeleteOrderAPIResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Post indicates an expected call of Post.
-func (mr *MockDHLOrderDeletorAPIMockRecorder) Post(headers, request any) *gomock.Call {
+func (mr *MockDHLOrderDeletorAPIMockRecorder) Post(endpoint, headers, request any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockDHLOrderDeletorAPI)(nil).Post), headers, request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockDHLOrderDeletorAPI)(nil).Post), endpoint, headers, request)
 }

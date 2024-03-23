@@ -60,29 +60,29 @@ func (h *httpFormPoster[ResponseBody]) PostForm(fullurl string, form map[string]
 
 type httpPosterInstance[Request any, Response any] struct {
 	httpClient    *netHTTP.Client
-	fullURL       string
+	baseURL       string
 	defaultHeader map[string]string
 }
 
-func NewHTTPPoster[Request any, Response any](httpClient *netHTTP.Client, fullURL string, defaultHeader map[string]string) httpPosterInstance[Request, Response] {
+func NewHTTPPoster[Request any, Response any](httpClient *netHTTP.Client, baseUrl string, defaultHeader map[string]string) httpPosterInstance[Request, Response] {
 	return httpPosterInstance[Request, Response]{
 		httpClient:    httpClient,
-		fullURL:       fullURL,
+		baseURL:       baseUrl,
 		defaultHeader: defaultHeader,
 	}
 }
 
-func (i httpPosterInstance[Request, Response]) Post(headers map[string]string, request Request) (Response, error) {
+func (i httpPosterInstance[Request, Response]) Post(url string, headers map[string]string, request Request) (Response, error) {
 	var m Response
 
-	fmt.Printf("making request to %s\n", i.fullURL)
+	fmt.Printf("making request to %s\n", i.baseURL+url)
 	reqBody, err := json.Marshal(request)
 	if err != nil {
 		return m, fmt.Errorf("mashal request error: %s", err)
 	}
 	fmt.Printf("request: \n%s\n", string(reqBody))
 
-	req, err := netHTTP.NewRequest(netHTTP.MethodPost, i.fullURL, bytes.NewReader(reqBody))
+	req, err := netHTTP.NewRequest(netHTTP.MethodPost, i.baseURL+url, bytes.NewReader(reqBody))
 	if err != nil {
 		return m, fmt.Errorf("error creating request: %s", err)
 	}
@@ -97,7 +97,7 @@ func (i httpPosterInstance[Request, Response]) Post(headers map[string]string, r
 
 	httpResponse, err := i.httpClient.Do(req)
 	if err != nil {
-		return m, fmt.Errorf("error sending request to %s: %v", i.fullURL, err)
+		return m, fmt.Errorf("error sending request to %s: %v", i.baseURL+url, err)
 	}
 
 	defer httpResponse.Body.Close()
@@ -118,19 +118,19 @@ func (i httpPosterInstance[Request, Response]) Post(headers map[string]string, r
 	return m, nil
 }
 
-func NewHTTPGetter[Request any, Response any](httpClient *netHTTP.Client, fullURL string, defaultHeader map[string]string) httpPosterInstance[Request, Response] {
+func NewHTTPGetter[Request any, Response any](httpClient *netHTTP.Client, baseURL string, defaultHeader map[string]string) httpPosterInstance[Request, Response] {
 	return httpPosterInstance[Request, Response]{
 		httpClient:    httpClient,
-		fullURL:       fullURL,
+		baseURL:       baseURL,
 		defaultHeader: defaultHeader,
 	}
 }
 
-func (i httpPosterInstance[Request, Response]) Get(headers map[string]string, queryParam string, request Request) (Response, error) {
+func (i httpPosterInstance[Request, Response]) Get(endpoint string, headers map[string]string, request Request) (Response, error) {
 	var m Response
 
-	fmt.Printf("making request to %s\n", i.fullURL+queryParam)
-	req, err := netHTTP.NewRequest(netHTTP.MethodGet, i.fullURL+queryParam, nil)
+	fmt.Printf("making request to %s\n", i.baseURL+endpoint)
+	req, err := netHTTP.NewRequest(netHTTP.MethodGet, i.baseURL+endpoint, nil)
 	if err != nil {
 		return m, fmt.Errorf("error creating request: %s", err)
 	}
@@ -145,7 +145,7 @@ func (i httpPosterInstance[Request, Response]) Get(headers map[string]string, qu
 
 	httpResponse, err := i.httpClient.Do(req)
 	if err != nil {
-		return m, fmt.Errorf("error sending request to %s: %v", i.fullURL, err)
+		return m, fmt.Errorf("error sending request to %s: %v", i.baseURL+endpoint, err)
 	}
 
 	defer httpResponse.Body.Close()

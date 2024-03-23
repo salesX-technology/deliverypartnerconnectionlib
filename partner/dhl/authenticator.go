@@ -21,7 +21,7 @@ func NewDHLAuthenticator(
 
 func (svc *dhlAuthenticator) Authenticate() (accessToken string, err error) {
 	request := DHLAuthenticationAPIRequest{}
-	response, err := svc.dhlAuthenticationAPI.Get(map[string]string{}, "?clientId="+svc.clientID+"&password="+svc.password, request)
+	response, err := svc.dhlAuthenticationAPI.Get("/rest/v1/OAuth/AccessToken?clientId="+svc.clientID+"&password="+svc.password, map[string]string{}, request)
 	if err != nil {
 		return "", fmt.Errorf("failed to authenticate with dhl: %w", err)
 	}

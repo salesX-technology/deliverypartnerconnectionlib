@@ -9,6 +9,7 @@ import (
 var (
 	_ deliverypartnerconnectionlib.OrderCreator = (*flashService)(nil)
 	_ deliverypartnerconnectionlib.OrderUpdator = (*flashService)(nil)
+	_ deliverypartnerconnectionlib.OrderDeleter = (*flashService)(nil)
 )
 
 func NewFlashService(
@@ -148,5 +149,9 @@ func (f *flashService) UpdateOrder(trackingNo string, order deliverypartnerconne
 
 	f.flashUpdateOrderAPI.PostForm(f.baseURL+"/open/v1/orders/modify", keyedOrderInfo)
 
+	return nil
+}
+
+func (f *flashService) DeleteOrder(trackingNo string) error {
 	return nil
 }

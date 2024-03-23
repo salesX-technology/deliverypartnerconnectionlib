@@ -91,7 +91,7 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (s
 	}
 	pickupTimeSlotRequestBodyBytes, _ := json.Marshal(timeSlotRequest)
 
-	timeSlotResponse, _ := f.shopeeTimeSlotAPI.Post(map[string]string{
+	timeSlotResponse, _ := f.shopeeTimeSlotAPI.Post("/open/api/v1/order/get_pickup_time", map[string]string{
 		"Content-Type": "application/json",
 		"check-sign":   f.checkSignFunc(timeStamp, randomNumForRequest, pickupTimeSlotRequestBodyBytes),
 		"app-id":       strconv.FormatUint(f.appID, 10),
@@ -146,6 +146,7 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (s
 	timeStamp = f.unixFunc()
 
 	response, _ := f.shopeeCreateOrderAPI.Post(
+		"/open/api/v1/order/batch_create_order",
 		map[string]string{
 			"Content-Type": "application/json",
 			"check-sign":   f.checkSignFunc(timeStamp, randomNumForRequest, shopeeCreateOrderRequestBodyBytes),
@@ -187,13 +188,15 @@ func (f *shopeeService) UpdateOrder(trackingNo string, order deliverypartnerconn
 	}
 	pickupTimeSlotRequestBodyBytes, _ := json.Marshal(timeSlotRequest)
 	timeStamp := f.unixFunc()
-	timeSlotResponse, _ := f.shopeeTimeSlotAPI.Post(map[string]string{
-		"Content-Type": "application/json",
-		"check-sign":   f.checkSignFunc(timeStamp, randomNumForRequest, pickupTimeSlotRequestBodyBytes),
-		"app-id":       strconv.FormatUint(f.appID, 10),
-		"timestamp":    strconv.FormatInt(timeStamp, 10),
-		"random-num":   strconv.FormatInt(randomNumForRequest, 10),
-	}, timeSlotRequest)
+	timeSlotResponse, _ := f.shopeeTimeSlotAPI.Post(
+		"/open/api/v1/order/get_pickup_time",
+		map[string]string{
+			"Content-Type": "application/json",
+			"check-sign":   f.checkSignFunc(timeStamp, randomNumForRequest, pickupTimeSlotRequestBodyBytes),
+			"app-id":       strconv.FormatUint(f.appID, 10),
+			"timestamp":    strconv.FormatInt(timeStamp, 10),
+			"random-num":   strconv.FormatInt(randomNumForRequest, 10),
+		}, timeSlotRequest)
 
 	updateOrderRequest := UpdateOrderRequest{
 		UserID:     f.userID,
@@ -243,6 +246,7 @@ func (f *shopeeService) UpdateOrder(trackingNo string, order deliverypartnerconn
 	timeStamp = f.unixFunc()
 
 	_, _ = f.shopeeUpdateOrderAPI.Post(
+		"/open/api/v1/order/batch_update_order",
 		map[string]string{
 			"Content-Type": "application/json",
 			"check-sign":   f.checkSignFunc(timeStamp, randomNumForRequest, updateOrderRequestBytes),

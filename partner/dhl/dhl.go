@@ -61,57 +61,59 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (stri
 	accessToken, _ := f.authorizer.Authenticate()
 
 	orderDateTime := f.nowFunc().Format("2006-01-02T15:04:05-07:00")
-	_, _ = f.dhlOrderCreatorAPI.Post(map[string]string{
-		"Content-Type": "application/json",
-	}, DHLCreateOrderAPIRequest{
-		ManifestRequest: ManifestRequest{
-			HDR: HDR{
-				MessageType:     "SHIPMENT",
-				MessageDateTime: orderDateTime,
-				MessageVersion:  "1.0",
-				AccessToken:     accessToken,
-			},
-			BD: BD{
-				PickupAccountID: f.DHLAPIConfig.PickupAccountID,
-				SoldToAccountID: f.DHLAPIConfig.SoldToAccountID,
-				HandoverMethod:  handoverMethod,
-				PickupDateTime:  orderDateTime,
-				PickupAddress: DHLADdress{
-					Name:     order.Sender.Name,
-					Address1: order.Sender.AddressDetail,
-					Country:  "TH",
-					State:    order.Sender.Province,
-					District: order.Sender.District,
-					PostCode: order.Sender.PostalCode,
+	_, _ = f.dhlOrderCreatorAPI.Post(
+		"/rest/v3/Shipment",
+		map[string]string{
+			"Content-Type": "application/json",
+		}, DHLCreateOrderAPIRequest{
+			ManifestRequest: ManifestRequest{
+				HDR: HDR{
+					MessageType:     "SHIPMENT",
+					MessageDateTime: orderDateTime,
+					MessageVersion:  "1.0",
+					AccessToken:     accessToken,
 				},
-				SipperAddress: DHLADdress{
-					Name:     order.Receiver.Name,
-					Address1: order.Receiver.AddressDetail,
-					Country:  "TH",
-					State:    order.Receiver.Province,
-					District: order.Receiver.District,
-					PostCode: order.Receiver.PostalCode,
-				},
-				ShipmentItems: []ShipmentItem{
-					{
-						Currency:       "THB",
-						TotalWeight:    order.WeightInGram,
-						TotalWeightUOM: "g",
-						ShipmentID:     order.ID,
-						ProductCode:    "PDO",
-						ConsigneeAddress: DHLADdress{
-							Name:     order.Receiver.Name,
-							Address1: order.Receiver.AddressDetail,
-							Country:  "TH",
-							State:    order.Receiver.Province,
-							District: order.Receiver.District,
-							PostCode: order.Receiver.PostalCode,
+				BD: BD{
+					PickupAccountID: f.DHLAPIConfig.PickupAccountID,
+					SoldToAccountID: f.DHLAPIConfig.SoldToAccountID,
+					HandoverMethod:  handoverMethod,
+					PickupDateTime:  orderDateTime,
+					PickupAddress: DHLADdress{
+						Name:     order.Sender.Name,
+						Address1: order.Sender.AddressDetail,
+						Country:  "TH",
+						State:    order.Sender.Province,
+						District: order.Sender.District,
+						PostCode: order.Sender.PostalCode,
+					},
+					SipperAddress: DHLADdress{
+						Name:     order.Receiver.Name,
+						Address1: order.Receiver.AddressDetail,
+						Country:  "TH",
+						State:    order.Receiver.Province,
+						District: order.Receiver.District,
+						PostCode: order.Receiver.PostalCode,
+					},
+					ShipmentItems: []ShipmentItem{
+						{
+							Currency:       "THB",
+							TotalWeight:    order.WeightInGram,
+							TotalWeightUOM: "g",
+							ShipmentID:     order.ID,
+							ProductCode:    "PDO",
+							ConsigneeAddress: DHLADdress{
+								Name:     order.Receiver.Name,
+								Address1: order.Receiver.AddressDetail,
+								Country:  "TH",
+								State:    order.Receiver.Province,
+								District: order.Receiver.District,
+								PostCode: order.Receiver.PostalCode,
+							},
 						},
 					},
 				},
 			},
-		},
-	})
+		})
 
 	return order.ID, nil
 }
@@ -126,6 +128,7 @@ func (f *dhlService) DeleteOrder(trackingNo string) error {
 	transactionDateTime := f.nowFunc().Format("2006-01-02T15:04:05-07:00")
 
 	_, _ = f.dhlOrderDeletorAPI.Post(
+		"/rest/v2/Label/Delete",
 		map[string]string{
 			"Content-Type": "application/json",
 		}, DHLDeleteOrderAPIRequest{

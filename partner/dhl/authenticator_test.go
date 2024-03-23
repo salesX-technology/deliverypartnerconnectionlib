@@ -36,7 +36,7 @@ func (s *AuthenticatorTestSuite) TestAuthenticate() {
 			Token: "accessToken",
 		},
 	}
-	s.mDHLAuthenticationAPI.EXPECT().Get(map[string]string{}, "?clientID=clientID&password=password", request).Return(response, nil)
+	s.mDHLAuthenticationAPI.EXPECT().Get("/rest/v1/OAuth/AccessToken?clientID=clientID&password=password", map[string]string{}, request).Return(response, nil)
 
 	accessToken, err := s.svc.Authenticate()
 	s.NoError(err)
@@ -45,7 +45,7 @@ func (s *AuthenticatorTestSuite) TestAuthenticate() {
 
 func (s *AuthenticatorTestSuite) TestAuthenticateFailed() {
 	request := DHLAuthenticationAPIRequest{}
-	s.mDHLAuthenticationAPI.EXPECT().Get(map[string]string{}, "?clientID=clientID&password=password", request).Return(DHLAuthenticationAPIResponse{}, errors.New("error"))
+	s.mDHLAuthenticationAPI.EXPECT().Get("/rest/v1/OAuth/AccessToken?clientID=clientID&password=password", map[string]string{}, request).Return(DHLAuthenticationAPIResponse{}, errors.New("error"))
 
 	accessToken, err := s.svc.Authenticate()
 	s.ErrorIs(err, errors.New("failed to authenticate with dhl: error"))

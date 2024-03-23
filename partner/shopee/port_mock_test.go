@@ -39,18 +39,18 @@ func (m *MockShoppeeCreateOrderAPI) EXPECT() *MockShoppeeCreateOrderAPIMockRecor
 }
 
 // Post mocks base method.
-func (m *MockShoppeeCreateOrderAPI) Post(headers map[string]string, request CreateOrderRequest) (CreateOrderResponse, error) {
+func (m *MockShoppeeCreateOrderAPI) Post(endpoint string, headers map[string]string, request CreateOrderRequest) (CreateOrderResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Post", headers, request)
+	ret := m.ctrl.Call(m, "Post", endpoint, headers, request)
 	ret0, _ := ret[0].(CreateOrderResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Post indicates an expected call of Post.
-func (mr *MockShoppeeCreateOrderAPIMockRecorder) Post(headers, request any) *gomock.Call {
+func (mr *MockShoppeeCreateOrderAPIMockRecorder) Post(endpoint, headers, request any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockShoppeeCreateOrderAPI)(nil).Post), headers, request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockShoppeeCreateOrderAPI)(nil).Post), endpoint, headers, request)
 }
 
 // MockShopeePickUpTimeAPI is a mock of ShopeePickUpTimeAPI interface.
@@ -77,18 +77,18 @@ func (m *MockShopeePickUpTimeAPI) EXPECT() *MockShopeePickUpTimeAPIMockRecorder 
 }
 
 // Post mocks base method.
-func (m *MockShopeePickUpTimeAPI) Post(headers map[string]string, request TimeSlotRequest) (TimeSlotResponse, error) {
+func (m *MockShopeePickUpTimeAPI) Post(endpoint string, headers map[string]string, request TimeSlotRequest) (TimeSlotResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Post", headers, request)
+	ret := m.ctrl.Call(m, "Post", endpoint, headers, request)
 	ret0, _ := ret[0].(TimeSlotResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Post indicates an expected call of Post.
-func (mr *MockShopeePickUpTimeAPIMockRecorder) Post(headers, request any) *gomock.Call {
+func (mr *MockShopeePickUpTimeAPIMockRecorder) Post(endpoint, headers, request any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockShopeePickUpTimeAPI)(nil).Post), headers, request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockShopeePickUpTimeAPI)(nil).Post), endpoint, headers, request)
 }
 
 // MockShopeeUpdateOrderAPI is a mock of ShopeeUpdateOrderAPI interface.
@@ -115,16 +115,16 @@ func (m *MockShopeeUpdateOrderAPI) EXPECT() *MockShopeeUpdateOrderAPIMockRecorde
 }
 
 // Post mocks base method.
-func (m *MockShopeeUpdateOrderAPI) Post(headers map[string]string, request UpdateOrderRequest) (UpdateOrderResponse, error) {
+func (m *MockShopeeUpdateOrderAPI) Post(endpoint string, headers map[string]string, request UpdateOrderRequest) (UpdateOrderResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Post", headers, request)
+	ret := m.ctrl.Call(m, "Post", endpoint, headers, request)
 	ret0, _ := ret[0].(UpdateOrderResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Post indicates an expected call of Post.
-func (mr *MockShopeeUpdateOrderAPIMockRecorder) Post(headers, request any) *gomock.Call {
+func (mr *MockShopeeUpdateOrderAPIMockRecorder) Post(endpoint, headers, request any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockShopeeUpdateOrderAPI)(nil).Post), headers, request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockShopeeUpdateOrderAPI)(nil).Post), endpoint, headers, request)
 }

@@ -40,9 +40,9 @@ func main() {
 }
 
 func shopeeCreateOrderExample() {
-	shopeeTimeSlotAPI := httpclient.NewHTTPPoster[shopee.TimeSlotRequest, shopee.TimeSlotResponse](http.DefaultClient, "https://test-stable.spx.co.th/open/api/v1/order/get_pickup_time", map[string]string{})
-	shopeeCreateOrderPoster := httpclient.NewHTTPPoster[shopee.CreateOrderRequest, shopee.CreateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th/open/api/v1/order/batch_create_order", map[string]string{})
-	shopeeUpdateOrderPoster := httpclient.NewHTTPPoster[shopee.UpdateOrderRequest, shopee.UpdateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th/open/api/v1/order/batch_update_order", map[string]string{})
+	shopeeTimeSlotAPI := httpclient.NewHTTPPoster[shopee.TimeSlotRequest, shopee.TimeSlotResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+	shopeeCreateOrderPoster := httpclient.NewHTTPPoster[shopee.CreateOrderRequest, shopee.CreateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+	shopeeUpdateOrderPoster := httpclient.NewHTTPPoster[shopee.UpdateOrderRequest, shopee.UpdateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
 
 	svc := shopee.NewShopeeService(100190, "57e08ead78cf63721eed92911f2dfe8a1a1152ebc880877ceae96e406c16dbab", 36439626319285, "b32776af-28c0-4283-971c-92ac48c01afe", shopeeCreateOrderPoster, shopeeUpdateOrderPoster, shopeeTimeSlotAPI)
 	trackingNo, err := svc.CreateOrder(deliverypartnerconnectionlib.Order{
@@ -73,9 +73,9 @@ func shopeeCreateOrderExample() {
 }
 
 func shopeeUpdateOrderExample() {
-	shopeeTimeSlotAPI := httpclient.NewHTTPPoster[shopee.TimeSlotRequest, shopee.TimeSlotResponse](http.DefaultClient, "https://test-stable.spx.co.th/open/api/v1/order/get_pickup_time", map[string]string{})
-	shopeeCreateOrderPoster := httpclient.NewHTTPPoster[shopee.CreateOrderRequest, shopee.CreateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th/open/api/v1/order/batch_create_order", map[string]string{})
-	shopeeUpdateOrderPoster := httpclient.NewHTTPPoster[shopee.UpdateOrderRequest, shopee.UpdateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th/open/api/v1/order/batch_update_order", map[string]string{})
+	shopeeTimeSlotAPI := httpclient.NewHTTPPoster[shopee.TimeSlotRequest, shopee.TimeSlotResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+	shopeeCreateOrderPoster := httpclient.NewHTTPPoster[shopee.CreateOrderRequest, shopee.CreateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+	shopeeUpdateOrderPoster := httpclient.NewHTTPPoster[shopee.UpdateOrderRequest, shopee.UpdateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
 
 	svc := shopee.NewShopeeService(100190, "57e08ead78cf63721eed92911f2dfe8a1a1152ebc880877ceae96e406c16dbab", 36439626319285, "b32776af-28c0-4283-971c-92ac48c01afe", shopeeCreateOrderPoster, shopeeUpdateOrderPoster, shopeeTimeSlotAPI)
 	trackingNo, err := svc.CreateOrder(deliverypartnerconnectionlib.Order{
@@ -286,11 +286,11 @@ func makeSignarureGenerator(appID uint64, secret string) func(timestamp, randomI
 }
 
 func dhlCreateOrderExample() {
-	dhlAuthenAPI := httpclient.NewHTTPGetter[dhl.DHLAuthenticationAPIRequest, dhl.DHLAuthenticationAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v1/OAuth/AccessToken", map[string]string{})
+	dhlAuthenAPI := httpclient.NewHTTPGetter[dhl.DHLAuthenticationAPIRequest, dhl.DHLAuthenticationAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com", map[string]string{})
 	auth := dhl.NewDHLAuthenticator(dhlAuthenAPI, "MTMwMTY0NzIzNw==", "customerpassword@2403790402")
 
-	dhlCreateOrderAPI := httpclient.NewHTTPPoster[dhl.DHLCreateOrderAPIRequest, dhl.DHLCreateOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v3/Shipment", map[string]string{})
-	dhlDeleteOrderAPI := httpclient.NewHTTPPoster[dhl.DHLDeleteOrderAPIRequest, dhl.DHLDeleteOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v2/Label/Delete", map[string]string{})
+	dhlCreateOrderAPI := httpclient.NewHTTPPoster[dhl.DHLCreateOrderAPIRequest, dhl.DHLCreateOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com", map[string]string{})
+	dhlDeleteOrderAPI := httpclient.NewHTTPPoster[dhl.DHLDeleteOrderAPIRequest, dhl.DHLDeleteOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com", map[string]string{})
 	svc := dhl.NewDHLService(
 		auth,
 		dhlCreateOrderAPI,
@@ -335,11 +335,11 @@ func dhlCreateOrderExample() {
 }
 
 func dhlDeleteOrderExample() {
-	dhlAuthenAPI := httpclient.NewHTTPGetter[dhl.DHLAuthenticationAPIRequest, dhl.DHLAuthenticationAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v1/OAuth/AccessToken", map[string]string{})
+	dhlAuthenAPI := httpclient.NewHTTPGetter[dhl.DHLAuthenticationAPIRequest, dhl.DHLAuthenticationAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com", map[string]string{})
 	auth := dhl.NewDHLAuthenticator(dhlAuthenAPI, "MTMwMTY0NzIzNw==", "customerpassword@2403790402")
 
-	dhlCreateOrderAPI := httpclient.NewHTTPPoster[dhl.DHLCreateOrderAPIRequest, dhl.DHLCreateOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v3/Shipment", map[string]string{})
-	dhlDeleteOrderAPI := httpclient.NewHTTPPoster[dhl.DHLDeleteOrderAPIRequest, dhl.DHLDeleteOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v2/Label/Delete", map[string]string{})
+	dhlCreateOrderAPI := httpclient.NewHTTPPoster[dhl.DHLCreateOrderAPIRequest, dhl.DHLCreateOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com", map[string]string{})
+	dhlDeleteOrderAPI := httpclient.NewHTTPPoster[dhl.DHLDeleteOrderAPIRequest, dhl.DHLDeleteOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com", map[string]string{})
 	svc := dhl.NewDHLService(
 		auth,
 		dhlCreateOrderAPI,

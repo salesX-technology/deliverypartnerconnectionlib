@@ -59,7 +59,7 @@ func (t *ShopeeTestSuite) TestGivenShopeeOrderIsCreating_WhenCreateOrder_ThenCal
 	userID := uint64(99999)
 	pickupTimeSlot := 1701981200
 
-	t.mTimeSlotAPI.EXPECT().Post(map[string]string{
+	t.mTimeSlotAPI.EXPECT().Post("/open/api/v1/order/get_pickup_time", map[string]string{
 		"Content-Type": "application/json",
 		"app-id":       "10000",
 		"check-sign":   "check-sign",
@@ -80,6 +80,7 @@ func (t *ShopeeTestSuite) TestGivenShopeeOrderIsCreating_WhenCreateOrder_ThenCal
 	}, nil)
 
 	t.mShopeeCreateOrderAPI.EXPECT().Post(
+		"/open/api/v1/order/batch_create_order",
 		map[string]string{
 			"Content-Type": "application/json",
 			"app-id":       "10000",
@@ -144,17 +145,19 @@ func (t *ShopeeTestSuite) TestGivenShopeeOrderIsCreating_WhenCreateOrder_ThenCal
 func (t *ShopeeTestSuite) TestGivenCreateShopeeOrder_WhenReturnCodeIsNot0_ThenReturnError() {
 	userID := uint64(99999)
 	pickupTimeSlot := 1701981200
-	t.mTimeSlotAPI.EXPECT().Post(map[string]string{
-		"Content-Type": "application/json",
-		"app-id":       "10000",
-		"check-sign":   "check-sign",
-		"timestamp":    "12345",
-		"random-num":   "98765",
-	}, TimeSlotRequest{
-		UserID:      userID,
-		UserSecret:  "user_secret",
-		ServiceType: 1,
-	}).Return(TimeSlotResponse{
+	t.mTimeSlotAPI.EXPECT().Post(
+		"/open/api/v1/order/get_pickup_time",
+		map[string]string{
+			"Content-Type": "application/json",
+			"app-id":       "10000",
+			"check-sign":   "check-sign",
+			"timestamp":    "12345",
+			"random-num":   "98765",
+		}, TimeSlotRequest{
+			UserID:      userID,
+			UserSecret:  "user_secret",
+			ServiceType: 1,
+		}).Return(TimeSlotResponse{
 		Data: []TimeSlotData{
 			{
 				PickupTime: pickupTimeSlot,
@@ -165,6 +168,7 @@ func (t *ShopeeTestSuite) TestGivenCreateShopeeOrder_WhenReturnCodeIsNot0_ThenRe
 	}, nil)
 
 	t.mShopeeCreateOrderAPI.EXPECT().Post(
+		"/open/api/v1/order/batch_create_order",
 		map[string]string{
 			"Content-Type": "application/json",
 			"app-id":       "10000",
@@ -225,17 +229,19 @@ func (t *ShopeeTestSuite) TestGivenCreateShopeeOrder_WhenReturnCodeIsNot0_ThenRe
 func (t *ShopeeTestSuite) TestGivenCreateShopeeOrder_WhenNoOrderInResponse_ThenReturnError() {
 	userID := uint64(99999)
 	pickupTimeSlot := 1701981200
-	t.mTimeSlotAPI.EXPECT().Post(map[string]string{
-		"Content-Type": "application/json",
-		"app-id":       "10000",
-		"check-sign":   "check-sign",
-		"timestamp":    "12345",
-		"random-num":   "98765",
-	}, TimeSlotRequest{
-		UserID:      userID,
-		UserSecret:  "user_secret",
-		ServiceType: 1,
-	}).Return(TimeSlotResponse{
+	t.mTimeSlotAPI.EXPECT().Post(
+		"/open/api/v1/order/get_pickup_time",
+		map[string]string{
+			"Content-Type": "application/json",
+			"app-id":       "10000",
+			"check-sign":   "check-sign",
+			"timestamp":    "12345",
+			"random-num":   "98765",
+		}, TimeSlotRequest{
+			UserID:      userID,
+			UserSecret:  "user_secret",
+			ServiceType: 1,
+		}).Return(TimeSlotResponse{
 		Data: []TimeSlotData{
 			{
 				PickupTime: pickupTimeSlot,
@@ -246,6 +252,7 @@ func (t *ShopeeTestSuite) TestGivenCreateShopeeOrder_WhenNoOrderInResponse_ThenR
 	}, nil)
 
 	t.mShopeeCreateOrderAPI.EXPECT().Post(
+		"/open/api/v1/order/batch_create_order",
 		map[string]string{
 			"Content-Type": "application/json",
 			"app-id":       "10000",
@@ -307,17 +314,19 @@ func (t *ShopeeTestSuite) TestGivenShopeeOrderIsUpdating_WhenUpdateOrder_ThenCal
 	userID := uint64(99999)
 
 	pickupTimeSlot := 1701981200
-	t.mTimeSlotAPI.EXPECT().Post(map[string]string{
-		"Content-Type": "application/json",
-		"app-id":       "10000",
-		"check-sign":   "check-sign",
-		"timestamp":    "12345",
-		"random-num":   "98765",
-	}, TimeSlotRequest{
-		UserID:      userID,
-		UserSecret:  "user_secret",
-		ServiceType: 1,
-	}).Return(TimeSlotResponse{
+	t.mTimeSlotAPI.EXPECT().Post(
+		"/open/api/v1/order/get_pickup_time",
+		map[string]string{
+			"Content-Type": "application/json",
+			"app-id":       "10000",
+			"check-sign":   "check-sign",
+			"timestamp":    "12345",
+			"random-num":   "98765",
+		}, TimeSlotRequest{
+			UserID:      userID,
+			UserSecret:  "user_secret",
+			ServiceType: 1,
+		}).Return(TimeSlotResponse{
 		Data: []TimeSlotData{
 			{
 				PickupTime: pickupTimeSlot,
@@ -327,55 +336,57 @@ func (t *ShopeeTestSuite) TestGivenShopeeOrderIsUpdating_WhenUpdateOrder_ThenCal
 		RetCode: 0,
 	}, nil)
 
-	t.mShopeeUpdateOrderAPI.EXPECT().Post(map[string]string{
-		"Content-Type": "application/json",
-		"app-id":       "10000",
-		"check-sign":   "check-sign",
-		"timestamp":    "12345",
-		"random-num":   "98765",
-	}, UpdateOrderRequest{
-		UserID:     userID,
-		UserSecret: "user_secret",
-		Orders: []Order{
-			{
-				TrackingNo: "tracking_no",
-				OrderID:    "order_id",
-				BaseInfo: BaseInfo{
-					ServiceType: 1,
-				},
-				FulfillmentInfo: FulfillmentInfo{
-					PaymentRole:         1,
-					CODCollection:       0,
-					InsuranceCollection: 0,
-					CollectType:         1,
-					PickUpTime:          pickupTimeSlot,
-					PickupTimeRangeID:   1,
-				},
-				SenderInfo: SenderInfo{
-					SenderName:          aValidNonCODOrder.Sender.Name,
-					SenderDetailAddress: aValidNonCODOrder.Sender.AddressDetail,
-					SenderState:         aValidNonCODOrder.Sender.Province,
-					SenderCity:          aValidNonCODOrder.Sender.District,
-					SenderDistrict:      aValidNonCODOrder.Sender.SubDistrict,
-					SenderPostCode:      aValidNonCODOrder.Sender.PostalCode,
-					SenderPhone:         aValidNonCODOrder.Sender.Phone,
-				},
-				DeliverInfo: DeliverInfo{
-					DeliverName:          aValidNonCODOrder.Receiver.Name,
-					DeliverDetailAddress: aValidNonCODOrder.Receiver.AddressDetail,
-					DeliverState:         aValidNonCODOrder.Receiver.Province,
-					DeliverCity:          aValidNonCODOrder.Receiver.District,
-					DeliverDistrict:      aValidNonCODOrder.Receiver.SubDistrict,
-					DeliverPostCode:      aValidNonCODOrder.Receiver.PostalCode,
-					DeliverPhone:         aValidNonCODOrder.Receiver.Phone,
-				},
-				ParcelInfo: ParcelInfo{
-					ParcelWeight:   1,
-					ParcelItemName: "parcel",
+	t.mShopeeUpdateOrderAPI.EXPECT().Post(
+		"/open/api/v1/order/batch_update_order",
+		map[string]string{
+			"Content-Type": "application/json",
+			"app-id":       "10000",
+			"check-sign":   "check-sign",
+			"timestamp":    "12345",
+			"random-num":   "98765",
+		}, UpdateOrderRequest{
+			UserID:     userID,
+			UserSecret: "user_secret",
+			Orders: []Order{
+				{
+					TrackingNo: "tracking_no",
+					OrderID:    "order_id",
+					BaseInfo: BaseInfo{
+						ServiceType: 1,
+					},
+					FulfillmentInfo: FulfillmentInfo{
+						PaymentRole:         1,
+						CODCollection:       0,
+						InsuranceCollection: 0,
+						CollectType:         1,
+						PickUpTime:          pickupTimeSlot,
+						PickupTimeRangeID:   1,
+					},
+					SenderInfo: SenderInfo{
+						SenderName:          aValidNonCODOrder.Sender.Name,
+						SenderDetailAddress: aValidNonCODOrder.Sender.AddressDetail,
+						SenderState:         aValidNonCODOrder.Sender.Province,
+						SenderCity:          aValidNonCODOrder.Sender.District,
+						SenderDistrict:      aValidNonCODOrder.Sender.SubDistrict,
+						SenderPostCode:      aValidNonCODOrder.Sender.PostalCode,
+						SenderPhone:         aValidNonCODOrder.Sender.Phone,
+					},
+					DeliverInfo: DeliverInfo{
+						DeliverName:          aValidNonCODOrder.Receiver.Name,
+						DeliverDetailAddress: aValidNonCODOrder.Receiver.AddressDetail,
+						DeliverState:         aValidNonCODOrder.Receiver.Province,
+						DeliverCity:          aValidNonCODOrder.Receiver.District,
+						DeliverDistrict:      aValidNonCODOrder.Receiver.SubDistrict,
+						DeliverPostCode:      aValidNonCODOrder.Receiver.PostalCode,
+						DeliverPhone:         aValidNonCODOrder.Receiver.Phone,
+					},
+					ParcelInfo: ParcelInfo{
+						ParcelWeight:   1,
+						ParcelItemName: "parcel",
+					},
 				},
 			},
-		},
-	}).Return(UpdateOrderResponse{
+		}).Return(UpdateOrderResponse{
 		RetCode: 0,
 	}, nil)
 
