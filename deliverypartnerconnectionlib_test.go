@@ -1,6 +1,7 @@
 package deliverypartnerconnectionlib
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -15,6 +16,8 @@ type DeliveryPartnerConnectionTestSuite struct {
 	mShopeeOrderCreator *MockOrderCreator
 	mDHLOrderCreator    *MockOrderCreator
 
+	mFlashOrderUpdator *MockOrderUpdator
+
 	service *deliveryPartnerConnectionLib
 }
 
@@ -23,11 +26,14 @@ func (t *DeliveryPartnerConnectionTestSuite) SetupTest() {
 	t.mFlashOrderCreator = NewMockOrderCreator(t.ctrl)
 	t.mShopeeOrderCreator = NewMockOrderCreator(t.ctrl)
 	t.mDHLOrderCreator = NewMockOrderCreator(t.ctrl)
+	t.mFlashOrderUpdator = NewMockOrderUpdator(t.ctrl)
 
 	t.service = New(map[string]OrderCreator{
 		"FLASH":  t.mFlashOrderCreator,
 		"SHOPEE": t.mShopeeOrderCreator,
 		"DHL":    t.mDHLOrderCreator,
+	}, map[string]OrderUpdator{
+		"FLASH": t.mFlashOrderUpdator,
 	})
 }
 
@@ -60,4 +66,16 @@ func (t *DeliveryPartnerConnectionTestSuite) TestGivenDHLOrderIsCreating_WhenCre
 
 	t.Equal("refID", orderRefID)
 	t.Nil(err)
+}
+
+func (t *DeliveryPartnerConnectionTestSuite) TestGivenFlashOrderIsUpdating_WhenUpdateOrder_ThenCallAdaptorFlashUpdateOrderAndReturnSuccess() {
+	t.mFlashOrderUpdator.EXPECT().UpdateOrder("trackingNo", aValidOrder).Return(nil)
+	err := t.service.UpdateOrder("FLASH", "trackingNo", aValidOrder)
+	t.Nil(err)
+}
+
+func (t *DeliveryPartnerConnectionTestSuite) TestGivenShopeeOrderIsUpdating_WhenUpdateOrder_ThenReturnError() {
+	t.mFlashOrderUpdator.EXPECT().UpdateOrder("trackingNo", aValidOrder).Return(errors.New("error"))
+	err := t.service.UpdateOrder("FLASH", "trackingNo", aValidOrder)
+	t.Error(err)
 }

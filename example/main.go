@@ -297,6 +297,8 @@ func dhlCreateOrderExample() {
 
 	dp := deliverypartnerconnectionlib.New(map[string]deliverypartnerconnectionlib.OrderCreator{
 		"DHL": svc,
+	}, map[string]deliverypartnerconnectionlib.OrderUpdator{
+		"DHL": svc,
 	})
 
 	tracking, err := dp.CreateOrder("DHL", deliverypartnerconnectionlib.Order{
