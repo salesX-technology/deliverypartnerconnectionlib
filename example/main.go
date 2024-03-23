@@ -35,7 +35,8 @@ func main() {
 	// fmt.Println(y)
 	// flashUpdateOrderExample()
 	// shopeeUpdateOrderExample()
-	dhlCreateOrderExample()
+	// dhlCreateOrderExample()
+	dhlDeleteOrderExample()
 }
 
 func shopeeCreateOrderExample() {
@@ -285,19 +286,25 @@ func makeSignarureGenerator(appID uint64, secret string) func(timestamp, randomI
 }
 
 func dhlCreateOrderExample() {
-
 	dhlAuthenAPI := httpclient.NewHTTPGetter[dhl.DHLAuthenticationAPIRequest, dhl.DHLAuthenticationAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v1/OAuth/AccessToken", map[string]string{})
 	auth := dhl.NewDHLAuthenticator(dhlAuthenAPI, "MTMwMTY0NzIzNw==", "customerpassword@2403790402")
 
 	dhlCreateOrderAPI := httpclient.NewHTTPPoster[dhl.DHLCreateOrderAPIRequest, dhl.DHLCreateOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v3/Shipment", map[string]string{})
-	svc := dhl.NewDHLService(auth, dhlCreateOrderAPI, dhl.DHLAPIConfig{
-		PickupAccountID: "5299060260",
-		SoldToAccountID: "5299060260",
-	})
+	dhlDeleteOrderAPI := httpclient.NewHTTPPoster[dhl.DHLDeleteOrderAPIRequest, dhl.DHLDeleteOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v2/Label/Delete", map[string]string{})
+	svc := dhl.NewDHLService(
+		auth,
+		dhlCreateOrderAPI,
+		dhlDeleteOrderAPI, dhl.DHLAPIConfig{
+			PickupAccountID: "5299060260",
+			SoldToAccountID: "5299060260",
+		},
+	)
 
 	dp := deliverypartnerconnectionlib.New(map[string]deliverypartnerconnectionlib.OrderCreator{
 		"DHL": svc,
 	}, map[string]deliverypartnerconnectionlib.OrderUpdator{
+		"DHL": svc,
+	}, map[string]deliverypartnerconnectionlib.OrderDeleter{
 		"DHL": svc,
 	})
 
@@ -324,5 +331,32 @@ func dhlCreateOrderExample() {
 	})
 
 	fmt.Printf("dhl trackingNo: %s\n", tracking)
+	fmt.Printf("dhl err: %v\n", err)
+}
+
+func dhlDeleteOrderExample() {
+	dhlAuthenAPI := httpclient.NewHTTPGetter[dhl.DHLAuthenticationAPIRequest, dhl.DHLAuthenticationAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v1/OAuth/AccessToken", map[string]string{})
+	auth := dhl.NewDHLAuthenticator(dhlAuthenAPI, "MTMwMTY0NzIzNw==", "customerpassword@2403790402")
+
+	dhlCreateOrderAPI := httpclient.NewHTTPPoster[dhl.DHLCreateOrderAPIRequest, dhl.DHLCreateOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v3/Shipment", map[string]string{})
+	dhlDeleteOrderAPI := httpclient.NewHTTPPoster[dhl.DHLDeleteOrderAPIRequest, dhl.DHLDeleteOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com/rest/v2/Label/Delete", map[string]string{})
+	svc := dhl.NewDHLService(
+		auth,
+		dhlCreateOrderAPI,
+		dhlDeleteOrderAPI, dhl.DHLAPIConfig{
+			PickupAccountID: "5299060260",
+			SoldToAccountID: "5299060260",
+		},
+	)
+
+	dp := deliverypartnerconnectionlib.New(map[string]deliverypartnerconnectionlib.OrderCreator{
+		"DHL": svc,
+	}, map[string]deliverypartnerconnectionlib.OrderUpdator{
+		"DHL": svc,
+	}, map[string]deliverypartnerconnectionlib.OrderDeleter{
+		"DHL": svc,
+	})
+
+	err := dp.DeleteOrder("DHL", "THHSU123")
 	fmt.Printf("dhl err: %v\n", err)
 }

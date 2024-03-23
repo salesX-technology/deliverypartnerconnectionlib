@@ -23,3 +23,6 @@ type DHLAuthenticationAPIResponse struct {
 type AccessTokenResponse struct {
 	Token string `json:"token"`
 }
+
+type DHLDeleteOrderAPIResponse struct {
+}

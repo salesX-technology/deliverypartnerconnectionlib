@@ -33,7 +33,6 @@ type ShipmentItem struct {
 	ShipmentID       string     `json:"shipmentID"`
 	ProductCode      string     `json:"productCode"`
 	ConsigneeAddress DHLADdress `json:"consigneeAddress"`
-	// ShipmentPiece []ShipmentPiece `json:"shipmentPiece"`
 }
 
 type ShipmentPiece struct {
@@ -50,4 +49,30 @@ type DHLADdress struct {
 }
 
 type DHLAuthenticationAPIRequest struct {
+}
+
+type DHLDeleteOrderAPIRequest struct {
+	DeleteShipmentReq DHLDeleteOrderAPIRequestDeleteShipmentRequest `json:"deleteShipmentReq"`
+}
+
+type DHLDeleteOrderAPIRequestDeleteShipmentRequest struct {
+	HDR DHLDeleteOrderAPIRequestHDR `json:"hdr"`
+	BD  DHLDeleteOrderAPIRequestBD  `json:"bd"`
+}
+
+type DHLDeleteOrderAPIRequestHDR struct {
+	MessageType     string `json:"messageType"`
+	MessageDateTime string `json:"messageDateTime"`
+	AccessToken     string `json:"accessToken"`
+	MessageVersion  string `json:"messageVersion"`
+}
+
+type DHLDeleteOrderAPIRequestBD struct {
+	PickupAccountID string                                 `json:"pickupAccountId"`
+	SoldToAccountID string                                 `json:"soldToAccountId"`
+	ShipmentItems   []DHLDeleteOrderAPIRequestShipmentItem `json:"shipmentItems"`
+}
+
+type DHLDeleteOrderAPIRequestShipmentItem struct {
+	ShipmentID string `json:"shipmentID"`
 }

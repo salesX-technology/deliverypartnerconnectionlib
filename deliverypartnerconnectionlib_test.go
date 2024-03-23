@@ -18,6 +18,8 @@ type DeliveryPartnerConnectionTestSuite struct {
 
 	mFlashOrderUpdator *MockOrderUpdator
 
+	mAnyOrderDeleter *MockOrderDeleter
+
 	service *deliveryPartnerConnectionLib
 }
 
@@ -27,6 +29,7 @@ func (t *DeliveryPartnerConnectionTestSuite) SetupTest() {
 	t.mShopeeOrderCreator = NewMockOrderCreator(t.ctrl)
 	t.mDHLOrderCreator = NewMockOrderCreator(t.ctrl)
 	t.mFlashOrderUpdator = NewMockOrderUpdator(t.ctrl)
+	t.mAnyOrderDeleter = NewMockOrderDeleter(t.ctrl)
 
 	t.service = New(map[string]OrderCreator{
 		"FLASH":  t.mFlashOrderCreator,
@@ -34,7 +37,11 @@ func (t *DeliveryPartnerConnectionTestSuite) SetupTest() {
 		"DHL":    t.mDHLOrderCreator,
 	}, map[string]OrderUpdator{
 		"FLASH": t.mFlashOrderUpdator,
-	})
+	},
+		map[string]OrderDeleter{
+			"ANY": t.mAnyOrderDeleter,
+		},
+	)
 }
 
 func TestSuiteRun(t *testing.T) {
@@ -77,5 +84,17 @@ func (t *DeliveryPartnerConnectionTestSuite) TestGivenFlashOrderIsUpdating_WhenU
 func (t *DeliveryPartnerConnectionTestSuite) TestGivenShopeeOrderIsUpdating_WhenUpdateOrder_ThenReturnError() {
 	t.mFlashOrderUpdator.EXPECT().UpdateOrder("trackingNo", aValidOrder).Return(errors.New("error"))
 	err := t.service.UpdateOrder("FLASH", "trackingNo", aValidOrder)
+	t.Error(err)
+}
+
+func (t *DeliveryPartnerConnectionTestSuite) TestGivenAnyOrderIsDeleting_WhenDeleteOrder_ThenCallAdaptorAnyDeleteOrderAndReturnSuccess() {
+	t.mAnyOrderDeleter.EXPECT().DeleteOrder("trackingNo").Return(nil)
+	err := t.service.DeleteOrder("ANY", "trackingNo")
+	t.Nil(err)
+}
+
+func (t *DeliveryPartnerConnectionTestSuite) TestGivenAnyOrderIsDeleting_WhenDeleteOrder_ThenCallAdaptorAnyDeleteOrderAndReturnError() {
+	t.mAnyOrderDeleter.EXPECT().DeleteOrder("trackingNo").Return(errors.New("error"))
+	err := t.service.DeleteOrder("ANY", "trackingNo")
 	t.Error(err)
 }

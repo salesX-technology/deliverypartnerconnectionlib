@@ -128,3 +128,41 @@ func (mr *MockDHLAuthenticationAPIMockRecorder) Get(headers, queryParam, request
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockDHLAuthenticationAPI)(nil).Get), headers, queryParam, request)
 }
+
+// MockDHLOrderDeletorAPI is a mock of DHLOrderDeletorAPI interface.
+type MockDHLOrderDeletorAPI struct {
+	ctrl     *gomock.Controller
+	recorder *MockDHLOrderDeletorAPIMockRecorder
+}
+
+// MockDHLOrderDeletorAPIMockRecorder is the mock recorder for MockDHLOrderDeletorAPI.
+type MockDHLOrderDeletorAPIMockRecorder struct {
+	mock *MockDHLOrderDeletorAPI
+}
+
+// NewMockDHLOrderDeletorAPI creates a new mock instance.
+func NewMockDHLOrderDeletorAPI(ctrl *gomock.Controller) *MockDHLOrderDeletorAPI {
+	mock := &MockDHLOrderDeletorAPI{ctrl: ctrl}
+	mock.recorder = &MockDHLOrderDeletorAPIMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockDHLOrderDeletorAPI) EXPECT() *MockDHLOrderDeletorAPIMockRecorder {
+	return m.recorder
+}
+
+// Post mocks base method.
+func (m *MockDHLOrderDeletorAPI) Post(headers map[string]string, request DHLDeleteOrderAPIRequest) (DHLDeleteOrderAPIResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Post", headers, request)
+	ret0, _ := ret[0].(DHLDeleteOrderAPIResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Post indicates an expected call of Post.
+func (mr *MockDHLOrderDeletorAPIMockRecorder) Post(headers, request any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockDHLOrderDeletorAPI)(nil).Post), headers, request)
+}

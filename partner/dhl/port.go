@@ -12,3 +12,7 @@ type DHLOrderCreatorAPI interface {
 type DHLAuthenticationAPI interface {
 	Get(headers map[string]string, queryParam string, request DHLAuthenticationAPIRequest) (DHLAuthenticationAPIResponse, error)
 }
+
+type DHLOrderDeletorAPI interface {
+	Post(headers map[string]string, request DHLDeleteOrderAPIRequest) (DHLDeleteOrderAPIResponse, error)
+}

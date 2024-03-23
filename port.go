@@ -9,3 +9,7 @@ type OrderCreator interface {
 type OrderUpdator interface {
 	UpdateOrder(trackingNo string, order Order) error
 }
+
+type OrderDeleter interface {
+	DeleteOrder(trackingNo string) error
+}

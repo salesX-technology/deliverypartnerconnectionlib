@@ -89,3 +89,40 @@ func (mr *MockOrderUpdatorMockRecorder) UpdateOrder(trackingNo, order any) *gomo
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOrder", reflect.TypeOf((*MockOrderUpdator)(nil).UpdateOrder), trackingNo, order)
 }
+
+// MockOrderDeleter is a mock of OrderDeleter interface.
+type MockOrderDeleter struct {
+	ctrl     *gomock.Controller
+	recorder *MockOrderDeleterMockRecorder
+}
+
+// MockOrderDeleterMockRecorder is the mock recorder for MockOrderDeleter.
+type MockOrderDeleterMockRecorder struct {
+	mock *MockOrderDeleter
+}
+
+// NewMockOrderDeleter creates a new mock instance.
+func NewMockOrderDeleter(ctrl *gomock.Controller) *MockOrderDeleter {
+	mock := &MockOrderDeleter{ctrl: ctrl}
+	mock.recorder = &MockOrderDeleterMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockOrderDeleter) EXPECT() *MockOrderDeleterMockRecorder {
+	return m.recorder
+}
+
+// DeleteOrder mocks base method.
+func (m *MockOrderDeleter) DeleteOrder(trackingNo string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteOrder", trackingNo)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteOrder indicates an expected call of DeleteOrder.
+func (mr *MockOrderDeleterMockRecorder) DeleteOrder(trackingNo any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOrder", reflect.TypeOf((*MockOrderDeleter)(nil).DeleteOrder), trackingNo)
+}
