@@ -15,6 +15,7 @@ type DHLServiceTestSuite struct {
 	mAuthenticator      *MockAuthenticator
 	mDHLOrderCreatorAPI *MockDHLOrderCreatorAPI
 	mDHLOrderDeletorAPI *MockDHLOrderDeletorAPI
+	mDHLOrderUpdatorAPI *MockDHLOrderUpdatorAPI
 
 	service *dhlService
 }
@@ -25,9 +26,11 @@ func (t *DHLServiceTestSuite) SetupTest() {
 	t.mAuthenticator = NewMockAuthenticator(t.ctrl)
 	t.mDHLOrderCreatorAPI = NewMockDHLOrderCreatorAPI(t.ctrl)
 	t.mDHLOrderDeletorAPI = NewMockDHLOrderDeletorAPI(t.ctrl)
+	t.mDHLOrderUpdatorAPI = NewMockDHLOrderUpdatorAPI(t.ctrl)
 
 	t.service = NewDHLService(t.mAuthenticator,
 		t.mDHLOrderCreatorAPI,
+		t.mDHLOrderUpdatorAPI,
 		t.mDHLOrderDeletorAPI,
 		DHLAPIConfig{
 			PickupAccountID: "PickupAccountID",
@@ -63,7 +66,7 @@ func (t *DHLServiceTestSuite) TestGivenOrderIsCreating_WhenCreateOrder_ThenRetur
 				SoldToAccountID: "SoldToAccountID",
 				HandoverMethod:  2,
 				PickupDateTime:  "2021-01-01T00:00:00+07:00",
-				PickupAddress: DHLADdress{
+				PickupAddress: &DHLADdress{
 					Name:     aValidNonCODOrder.Sender.Name,
 					Address1: aValidNonCODOrder.Sender.AddressDetail,
 					Country:  "TH",
@@ -71,7 +74,7 @@ func (t *DHLServiceTestSuite) TestGivenOrderIsCreating_WhenCreateOrder_ThenRetur
 					District: aValidNonCODOrder.Sender.District,
 					PostCode: aValidNonCODOrder.Sender.PostalCode,
 				},
-				SipperAddress: DHLADdress{
+				SipperAddress: &DHLADdress{
 					Name:     aValidNonCODOrder.Receiver.Name,
 					Address1: aValidNonCODOrder.Receiver.AddressDetail,
 					Country:  "TH",
@@ -86,7 +89,7 @@ func (t *DHLServiceTestSuite) TestGivenOrderIsCreating_WhenCreateOrder_ThenRetur
 						TotalWeightUOM: "g",
 						ShipmentID:     aValidNonCODOrder.ID,
 						ProductCode:    "PDO",
-						ConsigneeAddress: DHLADdress{
+						ConsigneeAddress: &DHLADdress{
 							Name:     aValidNonCODOrder.Receiver.Name,
 							Address1: aValidNonCODOrder.Receiver.AddressDetail,
 							Country:  "TH",
@@ -124,16 +127,16 @@ func (t *DHLServiceTestSuite) TestGivenOrderIsDeleting_WhenDeleteOrder_ThenRetur
 			"Content-Type": "application/json",
 		}, DHLDeleteOrderAPIRequest{
 			DeleteShipmentReq: DHLDeleteOrderAPIRequestDeleteShipmentRequest{
-				HDR: DHLDeleteOrderAPIRequestHDR{
+				HDR: HDR{
 					MessageType:     "DELETESHIPMENT",
 					MessageDateTime: "2021-01-01T00:00:00+07:00",
 					AccessToken:     "accessToken",
 					MessageVersion:  "1.0",
 				},
-				BD: DHLDeleteOrderAPIRequestBD{
+				BD: BD{
 					SoldToAccountID: "SoldToAccountID",
 					PickupAccountID: "PickupAccountID",
-					ShipmentItems: []DHLDeleteOrderAPIRequestShipmentItem{
+					ShipmentItems: []ShipmentItem{
 						{
 							ShipmentID: "trackingNo",
 						},
@@ -143,5 +146,68 @@ func (t *DHLServiceTestSuite) TestGivenOrderIsDeleting_WhenDeleteOrder_ThenRetur
 		}).Return(DHLDeleteOrderAPIResponse{}, nil)
 
 	err := t.service.DeleteOrder("trackingNo")
+	t.Nil(err)
+}
+
+func (t *DHLServiceTestSuite) TestGivenOrderIsCreated_WhenUpdateOrder_ThenReturnSuccess() {
+	t.mAuthenticator.EXPECT().Authenticate().Return("accessToken", nil)
+	t.mDHLOrderUpdatorAPI.EXPECT().Post("/rest/v2/Label/Edit", map[string]string{
+		"Content-Type": "application/json",
+	}, DHLUpdateOrderAPIRequest{
+		LabelRequest: LabelRequest{
+			HDR: HDR{
+				MessageType:     "EDITSHIPMENT",
+				MessageDateTime: "2021-01-01T00:00:00+07:00",
+				MessageVersion:  "1.4",
+				AccessToken:     "accessToken",
+			},
+			BD: BD{
+				PickupAccountID: "PickupAccountID",
+				SoldToAccountID: "SoldToAccountID",
+				HandoverMethod:  2,
+				PickupDateTime:  "2021-01-01T00:00:00+07:00",
+				PickupAddress: &DHLADdress{
+					Name:     aValidNonCODOrder.Sender.Name,
+					Address1: aValidNonCODOrder.Sender.AddressDetail,
+					Country:  "TH",
+					State:    aValidNonCODOrder.Sender.Province,
+					District: aValidNonCODOrder.Sender.District,
+					PostCode: aValidNonCODOrder.Sender.PostalCode,
+				},
+				SipperAddress: &DHLADdress{
+					Name:     aValidNonCODOrder.Receiver.Name,
+					Address1: aValidNonCODOrder.Receiver.AddressDetail,
+					Country:  "TH",
+					State:    aValidNonCODOrder.Receiver.Province,
+					District: aValidNonCODOrder.Receiver.District,
+					PostCode: aValidNonCODOrder.Receiver.PostalCode,
+				},
+				ShipmentItems: []ShipmentItem{
+					{
+						Currency:       "THB",
+						TotalWeight:    1000,
+						TotalWeightUOM: "g",
+						ShipmentID:     "trackingNo",
+						ProductCode:    "PDO",
+						ConsigneeAddress: &DHLADdress{
+							Name:     aValidNonCODOrder.Receiver.Name,
+							Address1: aValidNonCODOrder.Receiver.AddressDetail,
+							Country:  "TH",
+							State:    aValidNonCODOrder.Receiver.Province,
+							District: aValidNonCODOrder.Receiver.District,
+							PostCode: aValidNonCODOrder.Receiver.PostalCode,
+						},
+					},
+				},
+				Label: &Label{
+					PageSize: "400x600",
+					Format:   "PDF",
+					Layout:   "1x1",
+				},
+			},
+		},
+	}).Return(DHLUpdateOrderAPIResponse{}, nil)
+
+	err := t.service.UpdateOrder("trackingNo", aValidNonCODOrder)
 	t.Nil(err)
 }

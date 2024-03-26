@@ -16,3 +16,7 @@ type DHLAuthenticationAPI interface {
 type DHLOrderDeletorAPI interface {
 	Post(endpoint string, headers map[string]string, request DHLDeleteOrderAPIRequest) (DHLDeleteOrderAPIResponse, error)
 }
+
+type DHLOrderUpdatorAPI interface {
+	Post(endpoint string, headers map[string]string, request DHLUpdateOrderAPIRequest) (DHLUpdateOrderAPIResponse, error)
+}

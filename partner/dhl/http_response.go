@@ -26,3 +26,6 @@ type AccessTokenResponse struct {
 
 type DHLDeleteOrderAPIResponse struct {
 }
+
+type DHLUpdateOrderAPIResponse struct {
+}

@@ -166,3 +166,41 @@ func (mr *MockDHLOrderDeletorAPIMockRecorder) Post(endpoint, headers, request an
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockDHLOrderDeletorAPI)(nil).Post), endpoint, headers, request)
 }
+
+// MockDHLOrderUpdatorAPI is a mock of DHLOrderUpdatorAPI interface.
+type MockDHLOrderUpdatorAPI struct {
+	ctrl     *gomock.Controller
+	recorder *MockDHLOrderUpdatorAPIMockRecorder
+}
+
+// MockDHLOrderUpdatorAPIMockRecorder is the mock recorder for MockDHLOrderUpdatorAPI.
+type MockDHLOrderUpdatorAPIMockRecorder struct {
+	mock *MockDHLOrderUpdatorAPI
+}
+
+// NewMockDHLOrderUpdatorAPI creates a new mock instance.
+func NewMockDHLOrderUpdatorAPI(ctrl *gomock.Controller) *MockDHLOrderUpdatorAPI {
+	mock := &MockDHLOrderUpdatorAPI{ctrl: ctrl}
+	mock.recorder = &MockDHLOrderUpdatorAPIMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockDHLOrderUpdatorAPI) EXPECT() *MockDHLOrderUpdatorAPIMockRecorder {
+	return m.recorder
+}
+
+// Post mocks base method.
+func (m *MockDHLOrderUpdatorAPI) Post(endpoint string, headers map[string]string, request DHLUpdateOrderAPIRequest) (DHLUpdateOrderAPIResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Post", endpoint, headers, request)
+	ret0, _ := ret[0].(DHLUpdateOrderAPIResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Post indicates an expected call of Post.
+func (mr *MockDHLOrderUpdatorAPIMockRecorder) Post(endpoint, headers, request any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Post", reflect.TypeOf((*MockDHLOrderUpdatorAPI)(nil).Post), endpoint, headers, request)
+}

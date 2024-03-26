@@ -17,22 +17,23 @@ type HDR struct {
 }
 
 type BD struct {
-	PickupAccountID string         `json:"pickupAccountId"`
-	SoldToAccountID string         `json:"soldToAccountId"`
-	PickupDateTime  string         `json:"pickupDateTime"`
-	HandoverMethod  int            `json:"handoverMethod"`
-	PickupAddress   DHLADdress     `json:"pickupAddress"`
-	SipperAddress   DHLADdress     `json:"shipperAddress"`
-	ShipmentItems   []ShipmentItem `json:"shipmentItems"`
+	PickupAccountID string         `json:"pickupAccountId,omitempty"`
+	SoldToAccountID string         `json:"soldToAccountId,omitempty"`
+	PickupDateTime  string         `json:"pickupDateTime,omitempty"`
+	HandoverMethod  int            `json:"handoverMethod,omitempty"`
+	PickupAddress   *DHLADdress    `json:"pickupAddress,omitempty"`
+	SipperAddress   *DHLADdress    `json:"shipperAddress,omitempty"`
+	ShipmentItems   []ShipmentItem `json:"shipmentItems,omitempty"`
+	Label           *Label         `json:"label,omitempty"`
 }
 
 type ShipmentItem struct {
-	Currency         string     `json:"currency"`
-	TotalWeight      int        `json:"totalWeight"`
-	TotalWeightUOM   string     `json:"totalWeightUOM"`
-	ShipmentID       string     `json:"shipmentID"`
-	ProductCode      string     `json:"productCode"`
-	ConsigneeAddress DHLADdress `json:"consigneeAddress"`
+	Currency         string      `json:"currency,omitempty"`
+	TotalWeight      int         `json:"totalWeight,omitempty"`
+	TotalWeightUOM   string      `json:"totalWeightUOM,omitempty"`
+	ShipmentID       string      `json:"shipmentID,omitempty"`
+	ProductCode      string      `json:"productCode,omitempty"`
+	ConsigneeAddress *DHLADdress `json:"consigneeAddress,omitempty"`
 }
 
 type ShipmentPiece struct {
@@ -56,23 +57,25 @@ type DHLDeleteOrderAPIRequest struct {
 }
 
 type DHLDeleteOrderAPIRequestDeleteShipmentRequest struct {
-	HDR DHLDeleteOrderAPIRequestHDR `json:"hdr"`
-	BD  DHLDeleteOrderAPIRequestBD  `json:"bd"`
-}
-
-type DHLDeleteOrderAPIRequestHDR struct {
-	MessageType     string `json:"messageType"`
-	MessageDateTime string `json:"messageDateTime"`
-	AccessToken     string `json:"accessToken"`
-	MessageVersion  string `json:"messageVersion"`
-}
-
-type DHLDeleteOrderAPIRequestBD struct {
-	PickupAccountID string                                 `json:"pickupAccountId"`
-	SoldToAccountID string                                 `json:"soldToAccountId"`
-	ShipmentItems   []DHLDeleteOrderAPIRequestShipmentItem `json:"shipmentItems"`
+	HDR HDR `json:"hdr"`
+	BD  BD  `json:"bd"`
 }
 
 type DHLDeleteOrderAPIRequestShipmentItem struct {
 	ShipmentID string `json:"shipmentID"`
+}
+
+type DHLUpdateOrderAPIRequest struct {
+	LabelRequest LabelRequest `json:"labelRequest"`
+}
+
+type LabelRequest struct {
+	HDR HDR `json:"hdr"`
+	BD  BD  `json:"bd"`
+}
+
+type Label struct {
+	PageSize string `json:"pageSize"`
+	Format   string `json:"format"`
+	Layout   string `json:"layout"`
 }

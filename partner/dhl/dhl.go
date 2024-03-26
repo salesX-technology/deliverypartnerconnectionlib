@@ -16,6 +16,7 @@ type dhlService struct {
 	authorizer         Authenticator
 	dhlOrderCreatorAPI DHLOrderCreatorAPI
 	dhlOrderDeletorAPI DHLOrderDeletorAPI
+	dhlOrderUpdatorAPI DHLOrderUpdatorAPI
 	DHLAPIConfig       DHLAPIConfig
 	nowFunc            func() time.Time
 }
@@ -30,6 +31,7 @@ type DHLAPIConfig struct {
 func NewDHLService(
 	authorizer Authenticator,
 	dhlOrderCreatorAPI DHLOrderCreatorAPI,
+	dhlOrderUpdatorAPI DHLOrderUpdatorAPI,
 	dhlOrderDeletorAPI DHLOrderDeletorAPI,
 	dhlAPIConfig DHLAPIConfig,
 	options ...DHLServiceOption,
@@ -38,6 +40,7 @@ func NewDHLService(
 		authorizer:         authorizer,
 		dhlOrderCreatorAPI: dhlOrderCreatorAPI,
 		dhlOrderDeletorAPI: dhlOrderDeletorAPI,
+		dhlOrderUpdatorAPI: dhlOrderUpdatorAPI,
 		DHLAPIConfig:       dhlAPIConfig,
 		nowFunc: func() time.Time {
 			return time.Now().Local()
@@ -78,7 +81,7 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (stri
 					SoldToAccountID: f.DHLAPIConfig.SoldToAccountID,
 					HandoverMethod:  handoverMethod,
 					PickupDateTime:  orderDateTime,
-					PickupAddress: DHLADdress{
+					PickupAddress: &DHLADdress{
 						Name:     order.Sender.Name,
 						Address1: order.Sender.AddressDetail,
 						Country:  "TH",
@@ -86,7 +89,7 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (stri
 						District: order.Sender.District,
 						PostCode: order.Sender.PostalCode,
 					},
-					SipperAddress: DHLADdress{
+					SipperAddress: &DHLADdress{
 						Name:     order.Receiver.Name,
 						Address1: order.Receiver.AddressDetail,
 						Country:  "TH",
@@ -101,7 +104,7 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (stri
 							TotalWeightUOM: "g",
 							ShipmentID:     order.ID,
 							ProductCode:    "PDO",
-							ConsigneeAddress: DHLADdress{
+							ConsigneeAddress: &DHLADdress{
 								Name:     order.Receiver.Name,
 								Address1: order.Receiver.AddressDetail,
 								Country:  "TH",
@@ -119,7 +122,68 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (stri
 }
 
 func (f *dhlService) UpdateOrder(trackingNo string, order deliverypartnerconnectionlib.Order) error {
-	panic("unimplemented")
+	accessToken, _ := f.authorizer.Authenticate()
+
+	orderDateTime := f.nowFunc().Format("2006-01-02T15:04:05-07:00")
+	_, _ = f.dhlOrderUpdatorAPI.Post(
+		"/rest/v2/Label/Edit",
+		map[string]string{
+			"Content-Type": "application/json",
+		}, DHLUpdateOrderAPIRequest{
+			LabelRequest: LabelRequest{
+				HDR: HDR{
+					MessageType:     "EDITSHIPMENT",
+					MessageDateTime: orderDateTime,
+					MessageVersion:  "1.4",
+					AccessToken:     accessToken,
+				},
+				BD: BD{
+					PickupAccountID: f.DHLAPIConfig.PickupAccountID,
+					SoldToAccountID: f.DHLAPIConfig.SoldToAccountID,
+					HandoverMethod:  handoverMethod,
+					PickupDateTime:  orderDateTime,
+					PickupAddress: &DHLADdress{
+						Name:     order.Sender.Name,
+						Address1: order.Sender.AddressDetail,
+						Country:  "TH",
+						State:    order.Sender.Province,
+						District: order.Sender.District,
+						PostCode: order.Sender.PostalCode,
+					},
+					SipperAddress: &DHLADdress{
+						Name:     order.Receiver.Name,
+						Address1: order.Receiver.AddressDetail,
+						Country:  "TH",
+						State:    order.Receiver.Province,
+						District: order.Receiver.District,
+						PostCode: order.Receiver.PostalCode,
+					},
+					ShipmentItems: []ShipmentItem{
+						{
+							Currency:       "THB",
+							TotalWeight:    order.WeightInGram,
+							TotalWeightUOM: "g",
+							ShipmentID:     trackingNo,
+							ProductCode:    "PDO",
+							ConsigneeAddress: &DHLADdress{
+								Name:     order.Receiver.Name,
+								Address1: order.Receiver.AddressDetail,
+								Country:  "TH",
+								State:    order.Receiver.Province,
+								District: order.Receiver.District,
+								PostCode: order.Receiver.PostalCode,
+							},
+						},
+					},
+					Label: &Label{
+						PageSize: "400x600",
+						Format:   "PDF",
+						Layout:   "1x1",
+					},
+				},
+			},
+		})
+	return nil
 }
 
 // DeleteOrder implements deliverypartnerconnectionlib.OrderDeleter.
@@ -133,16 +197,16 @@ func (f *dhlService) DeleteOrder(trackingNo string) error {
 			"Content-Type": "application/json",
 		}, DHLDeleteOrderAPIRequest{
 			DeleteShipmentReq: DHLDeleteOrderAPIRequestDeleteShipmentRequest{
-				HDR: DHLDeleteOrderAPIRequestHDR{
+				HDR: HDR{
 					MessageType:     "DELETESHIPMENT",
 					MessageDateTime: transactionDateTime,
 					AccessToken:     accessToken,
 					MessageVersion:  "1.0",
 				},
-				BD: DHLDeleteOrderAPIRequestBD{
+				BD: BD{
 					SoldToAccountID: f.DHLAPIConfig.SoldToAccountID,
 					PickupAccountID: f.DHLAPIConfig.PickupAccountID,
-					ShipmentItems: []DHLDeleteOrderAPIRequestShipmentItem{
+					ShipmentItems: []ShipmentItem{
 						{
 							ShipmentID: trackingNo,
 						},
