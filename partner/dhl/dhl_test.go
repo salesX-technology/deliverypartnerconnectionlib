@@ -4,6 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"errors"
+
 	"github.com/stretchr/testify/suite"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -210,4 +212,55 @@ func (t *DHLServiceTestSuite) TestGivenOrderIsCreated_WhenUpdateOrder_ThenReturn
 
 	err := t.service.UpdateOrder("trackingNo", aValidNonCODOrder)
 	t.Nil(err)
+}
+
+func (t *DHLServiceTestSuite) TestGivenAuthenticatorIsBroken_WhenCreateOrder_ThenReturnError() {
+	someError := errors.New("some error")
+	t.mAuthenticator.EXPECT().Authenticate().Return("", someError)
+
+	_, err := t.service.CreateOrder(aValidNonCODOrder)
+	t.Equal(someError, err)
+}
+
+func (t *DHLServiceTestSuite) TestGivenAuthenticatorIsBroken_WhenUpdateOrder_ThenReturnError() {
+	someError := errors.New("some error")
+	t.mAuthenticator.EXPECT().Authenticate().Return("", someError)
+
+	err := t.service.UpdateOrder("tracking", aValidNonCODOrder)
+	t.Equal(someError, err)
+}
+
+func (t *DHLServiceTestSuite) TestGivenAuthenticatorIsBroken_WhenDeleteOrder_ThenReturnError() {
+	someError := errors.New("some error")
+	t.mAuthenticator.EXPECT().Authenticate().Return("", someError)
+
+	err := t.service.DeleteOrder("tracking")
+	t.Equal(someError, err)
+}
+
+func (t *DHLServiceTestSuite) TestGivenDHLAPIIsBroken_WhenCreateOrder_ThenReturnError() {
+	someError := errors.New("some error")
+	t.mAuthenticator.EXPECT().Authenticate().Return("token", nil)
+	t.mDHLOrderCreatorAPI.EXPECT().Post(gomock.Any(), gomock.Any(), gomock.Any()).Return(DHLCreateOrderAPIResponse{}, errors.New("some error"))
+
+	_, err := t.service.CreateOrder(aValidNonCODOrder)
+	t.Equal(someError, err)
+}
+
+func (t *DHLServiceTestSuite) TestGivenDHLAPIIsBroken_WhenUpdateOrder_ThenReturnError() {
+	someError := errors.New("some error")
+	t.mAuthenticator.EXPECT().Authenticate().Return("token", nil)
+	t.mDHLOrderUpdatorAPI.EXPECT().Post(gomock.Any(), gomock.Any(), gomock.Any()).Return(DHLUpdateOrderAPIResponse{}, errors.New("some error"))
+
+	err := t.service.UpdateOrder("tracking", aValidNonCODOrder)
+	t.Equal(someError, err)
+}
+
+func (t *DHLServiceTestSuite) TestGivenDHLAPIIsBroken_WhenDeleteOrder_ThenReturnError() {
+	someError := errors.New("some error")
+	t.mAuthenticator.EXPECT().Authenticate().Return("token", nil)
+	t.mDHLOrderDeletorAPI.EXPECT().Post(gomock.Any(), gomock.Any(), gomock.Any()).Return(DHLDeleteOrderAPIResponse{}, errors.New("some error"))
+
+	err := t.service.DeleteOrder("tracking")
+	t.Equal(someError, err)
 }

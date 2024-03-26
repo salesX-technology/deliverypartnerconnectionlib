@@ -277,3 +277,19 @@ func (t *FlashTestSuite) TestGivenFlashOrderIsExist_WhenDeleteOrder_ThenReturnSu
 	err := t.service.DeleteOrder("trackingNo")
 	t.NoError(err)
 }
+
+func (t *FlashTestSuite) TestGivenFlashAPIIsBroken_WhenUpdateOrder_ThenReturnError() {
+	t.mFlashUpdateShipmentInfo.EXPECT().PostForm(
+		gomock.Any(), gomock.Any()).Return(FlashOrderUpdateAPIResponse{}, errors.New("error"))
+
+	err := t.service.UpdateOrder("trackingNo", deliverypartnerconnectionlib.Order{})
+	t.Error(err)
+}
+
+func (t *FlashTestSuite) TestGivenFlashAPIIsBroken_WhenDeleteOrder_ThenReturnError() {
+	t.mFlashDeleteOrder.EXPECT().PostForm(
+		gomock.Any(), gomock.Any()).Return(FlashOrderDeleteAPIResponse{}, errors.New("error"))
+
+	err := t.service.DeleteOrder("trackingNo")
+	t.Error(err)
+}

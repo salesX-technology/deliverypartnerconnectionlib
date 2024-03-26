@@ -93,9 +93,12 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (s
 		UserSecret:  f.userSecret,
 		ServiceType: 1,
 	}
-	pickupTimeSlotRequestBodyBytes, _ := json.Marshal(timeSlotRequest)
+	pickupTimeSlotRequestBodyBytes, err := json.Marshal(timeSlotRequest)
+	if err != nil {
+		return "", err
+	}
 
-	timeSlotResponse, _ := f.shopeeTimeSlotAPI.Post("/open/api/v1/order/get_pickup_time", map[string]string{
+	timeSlotResponse, err := f.shopeeTimeSlotAPI.Post("/open/api/v1/order/get_pickup_time", map[string]string{
 		"Content-Type": "application/json",
 		"check-sign":   f.checkSignFunc(timeStamp, randomNumForRequest, pickupTimeSlotRequestBodyBytes),
 		"app-id":       strconv.FormatUint(f.appID, 10),
@@ -145,11 +148,18 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (s
 			},
 		},
 	}
+	if err != nil {
+		return "", fmt.Errorf("shopee create order failed with error: %w", err)
+	}
 
-	shopeeCreateOrderRequestBodyBytes, _ := json.Marshal(shopeeCreateOrderRequestBody)
+	shopeeCreateOrderRequestBodyBytes, err := json.Marshal(shopeeCreateOrderRequestBody)
+	if err != nil {
+		return "", fmt.Errorf("shopee create order failed with error: %w", err)
+	}
+
 	timeStamp = f.unixFunc()
 
-	response, _ := f.shopeeCreateOrderAPI.Post(
+	response, err := f.shopeeCreateOrderAPI.Post(
 		"/open/api/v1/order/batch_create_order",
 		map[string]string{
 			"Content-Type": "application/json",
@@ -159,6 +169,9 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (s
 			"random-num":   strconv.FormatInt(randomNumForRequest, 10),
 		}, shopeeCreateOrderRequestBody,
 	)
+	if err != nil {
+		return "", fmt.Errorf("shopee create order failed with error: %w", err)
+	}
 
 	if response.RetCode != 0 {
 		return "", fmt.Errorf("shopee create order failed with ret_code: %d", response.RetCode)
@@ -192,7 +205,7 @@ func (f *shopeeService) UpdateOrder(trackingNo string, order deliverypartnerconn
 	}
 	pickupTimeSlotRequestBodyBytes, _ := json.Marshal(timeSlotRequest)
 	timeStamp := f.unixFunc()
-	timeSlotResponse, _ := f.shopeeTimeSlotAPI.Post(
+	timeSlotResponse, err := f.shopeeTimeSlotAPI.Post(
 		"/open/api/v1/order/get_pickup_time",
 		map[string]string{
 			"Content-Type": "application/json",
@@ -201,6 +214,9 @@ func (f *shopeeService) UpdateOrder(trackingNo string, order deliverypartnerconn
 			"timestamp":    strconv.FormatInt(timeStamp, 10),
 			"random-num":   strconv.FormatInt(randomNumForRequest, 10),
 		}, timeSlotRequest)
+	if err != nil {
+		return fmt.Errorf("shopee update order failed with error: %w", err)
+	}
 
 	updateOrderRequest := UpdateOrderRequest{
 		UserID:     f.userID,
@@ -246,10 +262,14 @@ func (f *shopeeService) UpdateOrder(trackingNo string, order deliverypartnerconn
 		},
 	}
 
-	updateOrderRequestBytes, _ := json.Marshal(updateOrderRequest)
+	updateOrderRequestBytes, err := json.Marshal(updateOrderRequest)
+	if err != nil {
+		return fmt.Errorf("shopee update order failed with error: %w", err)
+	}
+
 	timeStamp = f.unixFunc()
 
-	_, _ = f.shopeeUpdateOrderAPI.Post(
+	_, err = f.shopeeUpdateOrderAPI.Post(
 		"/open/api/v1/order/batch_update_order",
 		map[string]string{
 			"Content-Type": "application/json",
@@ -259,6 +279,9 @@ func (f *shopeeService) UpdateOrder(trackingNo string, order deliverypartnerconn
 			"random-num":   strconv.FormatInt(randomNumForRequest, 10),
 		}, updateOrderRequest,
 	)
+	if err != nil {
+		return fmt.Errorf("shopee update order failed with error: %w", err)
+	}
 
 	return nil
 }
@@ -272,10 +295,13 @@ func (f *shopeeService) DeleteOrder(trackingNo string) error {
 		TrackingNoList: []string{trackingNo},
 	}
 
-	cancelOrderRequestBytes, _ := json.Marshal(cancelOrderRequest)
+	cancelOrderRequestBytes, err := json.Marshal(cancelOrderRequest)
+	if err != nil {
+		return fmt.Errorf("shopee cancel order failed with error: %w", err)
+	}
 
 	timeStamp := f.unixFunc()
-	_, _ = f.ShopeeCancelOrderAPI.Post(
+	_, err = f.ShopeeCancelOrderAPI.Post(
 		"/open/api/v1/order/batch_cancel_order",
 		map[string]string{
 			"Content-Type": "application/json",
@@ -285,6 +311,9 @@ func (f *shopeeService) DeleteOrder(trackingNo string) error {
 			"random-num":   strconv.FormatInt(randomNumForRequest, 10),
 		}, cancelOrderRequest,
 	)
+	if err != nil {
+		return fmt.Errorf("shopee cancel order failed with error: %w", err)
+	}
 
 	return nil
 }

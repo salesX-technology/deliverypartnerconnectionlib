@@ -61,10 +61,13 @@ func WithNowFunc(nowFunc func() time.Time) DHLServiceOption {
 }
 
 func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (string, error) {
-	accessToken, _ := f.authorizer.Authenticate()
+	accessToken, err := f.authorizer.Authenticate()
+	if err != nil {
+		return "", err
+	}
 
 	orderDateTime := f.nowFunc().Format("2006-01-02T15:04:05-07:00")
-	_, _ = f.dhlOrderCreatorAPI.Post(
+	_, err = f.dhlOrderCreatorAPI.Post(
 		"/rest/v3/Shipment",
 		map[string]string{
 			"Content-Type": "application/json",
@@ -118,14 +121,21 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (stri
 			},
 		})
 
+	if err != nil {
+		return "", err
+	}
+
 	return order.ID, nil
 }
 
 func (f *dhlService) UpdateOrder(trackingNo string, order deliverypartnerconnectionlib.Order) error {
-	accessToken, _ := f.authorizer.Authenticate()
+	accessToken, err := f.authorizer.Authenticate()
+	if err != nil {
+		return err
+	}
 
 	orderDateTime := f.nowFunc().Format("2006-01-02T15:04:05-07:00")
-	_, _ = f.dhlOrderUpdatorAPI.Post(
+	_, err = f.dhlOrderUpdatorAPI.Post(
 		"/rest/v2/Label/Edit",
 		map[string]string{
 			"Content-Type": "application/json",
@@ -183,15 +193,24 @@ func (f *dhlService) UpdateOrder(trackingNo string, order deliverypartnerconnect
 				},
 			},
 		})
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // DeleteOrder implements deliverypartnerconnectionlib.OrderDeleter.
 func (f *dhlService) DeleteOrder(trackingNo string) error {
-	accessToken, _ := f.authorizer.Authenticate()
+	accessToken, err := f.authorizer.Authenticate()
+	if err != nil {
+		return err
+	}
+
 	transactionDateTime := f.nowFunc().Format("2006-01-02T15:04:05-07:00")
 
-	_, _ = f.dhlOrderDeletorAPI.Post(
+	_, err = f.dhlOrderDeletorAPI.Post(
 		"/rest/v2/Label/Delete",
 		map[string]string{
 			"Content-Type": "application/json",
@@ -214,6 +233,9 @@ func (f *dhlService) DeleteOrder(trackingNo string) error {
 				},
 			},
 		})
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

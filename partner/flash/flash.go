@@ -148,7 +148,10 @@ func (f *flashService) UpdateOrder(trackingNo string, order deliverypartnerconne
 
 	keyedOrderInfo["sign"] = plainSignature
 
-	f.flashUpdateOrderAPI.PostForm(f.baseURL+"/open/v1/orders/modify", keyedOrderInfo)
+	_, err := f.flashUpdateOrderAPI.PostForm(f.baseURL+"/open/v1/orders/modify", keyedOrderInfo)
+	if err != nil {
+		return fmt.Errorf("failed to update order with flash: %s", err)
+	}
 
 	return nil
 }
@@ -164,7 +167,10 @@ func (f *flashService) DeleteOrder(trackingNo string) error {
 
 	deleteForm["sign"] = plainSignature
 
-	_, _ = f.flashDeleteOrderaPI.PostForm("/open/v1/orders/"+trackingNo+"/cancel", deleteForm)
+	_, err := f.flashDeleteOrderaPI.PostForm("/open/v1/orders/"+trackingNo+"/cancel", deleteForm)
+	if err != nil {
+		return fmt.Errorf("failed to delete order with flash: %s", err)
+	}
 
 	return nil
 }
