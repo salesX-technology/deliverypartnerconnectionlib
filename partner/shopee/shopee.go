@@ -83,8 +83,9 @@ func WithUnixTimeFunc(unixFunc func() int64) ShopeeServiceOption {
 	}
 }
 
-func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (string, error) {
+func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (map[string]interface{}, error) {
 	randomNumForRequest := f.randomFunc()
+	responseOrder := make(map[string]interface{})
 
 	timeStamp := f.unixFunc()
 
@@ -95,7 +96,7 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (s
 	}
 	pickupTimeSlotRequestBodyBytes, err := json.Marshal(timeSlotRequest)
 	if err != nil {
-		return "", err
+		return responseOrder, fmt.Errorf("shopee create order failed with error: %w", err)
 	}
 
 	timeSlotResponse, err := f.shopeeTimeSlotAPI.Post("/open/api/v1/order/get_pickup_time", map[string]string{
@@ -149,12 +150,12 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (s
 		},
 	}
 	if err != nil {
-		return "", fmt.Errorf("shopee create order failed with error: %w", err)
+		return responseOrder, fmt.Errorf("shopee create order failed with error: %w", err)
 	}
 
 	shopeeCreateOrderRequestBodyBytes, err := json.Marshal(shopeeCreateOrderRequestBody)
 	if err != nil {
-		return "", fmt.Errorf("shopee create order failed with error: %w", err)
+		return responseOrder, fmt.Errorf("shopee create order failed with error: %w", err)
 	}
 
 	timeStamp = f.unixFunc()
@@ -170,18 +171,32 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (s
 		}, shopeeCreateOrderRequestBody,
 	)
 	if err != nil {
-		return "", fmt.Errorf("shopee create order failed with error: %w", err)
+		return responseOrder, fmt.Errorf("shopee create order failed with error: %w", err)
 	}
 
 	if response.RetCode != 0 {
-		return "", fmt.Errorf("shopee create order failed with ret_code: %d", response.RetCode)
+		return responseOrder, fmt.Errorf("shopee create order failed with ret_code: %d", response.RetCode)
 	}
 
 	if len(response.Data.Orders) == 0 {
-		return "", fmt.Errorf("shopee create order failed with no order in response")
+		return responseOrder, fmt.Errorf("shopee create order failed with empty orders")
 	}
 
-	return response.Data.Orders[0].TrackingNo, nil
+	// var responseOrder map[string]interface{}
+	responseOrder = make(map[string]interface{})
+	responseOrder["OrderID"] = response.Data.Orders[0].OrderID
+	responseOrder["TrackingNo"] = response.Data.Orders[0].TrackingNo
+	responseOrder["TrackingLink"] = response.Data.Orders[0].TrackingLink
+	responseOrder["RFirstSortCode"] = response.Data.Orders[0].RFirstSortCode
+	responseOrder["RThirdSortCode"] = response.Data.Orders[0].RThirdSortCode
+	responseOrder["ReturnFirstSortCode"] = response.Data.Orders[0].ReturnFirstSortCode
+	responseOrder["EstimatedShippingFee"] = response.Data.Orders[0].EstimatedShippingFee
+	responseOrder["BasicShippingFee"] = response.Data.Orders[0].BasicShippingFee
+	responseOrder["CODServiceFee"] = response.Data.Orders[0].CODServiceFee
+	responseOrder["InsuranceServiceFee"] = response.Data.Orders[0].InsuranceServiceFee
+	responseOrder["VATFee"] = response.Data.Orders[0].VATFee
+
+	return responseOrder, nil
 }
 
 func GenerateCheckSign(appId uint64, secret string, timestamp, random int64, payload []byte) (string, error) {

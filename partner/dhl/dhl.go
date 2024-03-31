@@ -60,10 +60,12 @@ func WithNowFunc(nowFunc func() time.Time) DHLServiceOption {
 	}
 }
 
-func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (string, error) {
+func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (map[string]interface{}, error) {
+	var resDHLOrderCreateOrder map[string]interface{}
+
 	accessToken, err := f.authorizer.Authenticate()
 	if err != nil {
-		return "", err
+		return resDHLOrderCreateOrder, err
 	}
 
 	orderDateTime := f.nowFunc().Format("2006-01-02T15:04:05-07:00")
@@ -122,10 +124,14 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (stri
 		})
 
 	if err != nil {
-		return "", err
+		return resDHLOrderCreateOrder, err
 	}
 
-	return order.ID, nil
+	resDHLOrderCreateOrder = map[string]interface{}{
+		"trackingNo": order.ID,
+	}
+
+	return resDHLOrderCreateOrder, nil
 }
 
 func (f *dhlService) UpdateOrder(trackingNo string, order deliverypartnerconnectionlib.Order) error {

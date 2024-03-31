@@ -65,7 +65,9 @@ type flashService struct {
 type nonceGeneratorFunc func(int) string
 type signatureGeneratorFunc func(map[string]string, string) string
 
-func (f *flashService) CreateOrder(order deliverypartnerconnectionlib.Order) (string, error) {
+func (f *flashService) CreateOrder(order deliverypartnerconnectionlib.Order) (map[string]interface{}, error) {
+	var responseCreateOrder map[string]interface{}
+
 	articleCategory := "99"
 	expressCategory := "1"
 	insured := "0"
@@ -106,10 +108,14 @@ func (f *flashService) CreateOrder(order deliverypartnerconnectionlib.Order) (st
 
 	response, err := f.flashCreateOrderAPI.PostForm("/open/v3/orders", keyedOrderInfo)
 	if err != nil {
-		return "", fmt.Errorf("failed to create order with flash: %s", err)
+		return responseCreateOrder, fmt.Errorf("failed to create order with flash: %s", err)
 	}
 
-	return response.Data.PNO, nil
+	responseCreateOrder = map[string]interface{}{
+		"PNO": response.Data.PNO,
+	}
+
+	return responseCreateOrder, nil
 }
 
 func (f *flashService) UpdateOrder(trackingNo string, order deliverypartnerconnectionlib.Order) error {

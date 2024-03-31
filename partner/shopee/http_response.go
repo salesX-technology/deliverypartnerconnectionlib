@@ -10,7 +10,17 @@ type Data struct {
 }
 
 type OrderResponse struct {
-	TrackingNo string `json:"tracking_no"`
+	OrderID              string  `json:"order_id"`
+	TrackingNo           string  `json:"tracking_no"`
+	TrackingLink         string  `json:"tracking_link"`
+	RFirstSortCode       string  `json:"r_first_sort_code"`
+	RThirdSortCode       string  `json:"r_third_sort_code"`
+	ReturnFirstSortCode  string  `json:"return_first_sort_code"`
+	EstimatedShippingFee float64 `json:"estimated_shipping_fee"`
+	BasicShippingFee     float64 `json:"basic_shipping_fee"`
+	CODServiceFee        float64 `json:"cod_service_fee"`
+	InsuranceServiceFee  float64 `json:"insurance_service_fee"`
+	VATFee               float64 `json:"vat_fee"`
 }
 
 type UpdateOrderResponse struct {
@@ -18,4 +28,18 @@ type UpdateOrderResponse struct {
 }
 
 type CancelOrderResponse struct {
+}
+
+type ShopeeCreateOrderResponse struct {
+	OrderID              string  `json:"order_id"`
+	TrackingNo           string  `json:"tracking_no"`
+	TrackingLink         string  `json:"tracking_link"`
+	RFirstSortCode       string  `json:"r_first_sort_code"`
+	RThirdSortCode       string  `json:"r_third_sort_code"`
+	ReturnFirstSortCode  string  `json:"return_first_sort_code"`
+	EstimatedShippingFee float64 `json:"estimated_shipping_fee"`
+	BasicShippingFee     float64 `json:"basic_shipping_fee"`
+	CODServiceFee        float64 `json:"cod_service_fee"`
+	InsuranceServiceFee  float64 `json:"insurance_service_fee"`
+	VATFee               float64 `json:"vat_fee"`
 }
