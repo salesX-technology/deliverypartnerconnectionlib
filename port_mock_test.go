@@ -39,10 +39,10 @@ func (m *MockOrderCreator) EXPECT() *MockOrderCreatorMockRecorder {
 }
 
 // CreateOrder mocks base method.
-func (m *MockOrderCreator) CreateOrder(order Order) (string, error) {
+func (m *MockOrderCreator) CreateOrder(order Order) (map[string]any, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateOrder", order)
-	ret0, _ := ret[0].(string)
+	ret0, _ := ret[0].(map[string]any)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
