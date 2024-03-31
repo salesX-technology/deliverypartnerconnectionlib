@@ -3,7 +3,11 @@
 package deliverypartnerconnectionlib
 
 type OrderCreator interface {
-	CreateOrder(order Order) (trackingNo string, err error)
+	//trackingNo string ปรับให้ออกเป็น array อะไรก็ได้
+	// example.CreateOrderResponse ปรับให้ออกเป็น string อะไรก็ได้
+
+	//CreateOrder(order Order) (trackingNo string, err error)
+	CreateOrder(order Order) (trackingNo map[string]interface{}, err error)
 }
 
 type OrderUpdator interface {

@@ -18,7 +18,7 @@ func New(
 	}
 }
 
-func (c *DeliveryPartnerConnectionLib) CreateOrder(partner string, order Order) (string, error) {
+func (c *DeliveryPartnerConnectionLib) CreateOrder(partner string, order Order) (map[string]interface{}, error) {
 	orderRefID, err := c.partnerCreateOrderAdaptor[partner].CreateOrder(order)
 	return orderRefID, err
 }
