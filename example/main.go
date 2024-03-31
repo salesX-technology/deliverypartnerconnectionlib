@@ -71,16 +71,16 @@ func main() {
 	// shopeeCancelOrderExample(dpl, "SPXTH044752225833")
 
 	// dhlUpdateOrderOrderExample(dpl)
-	trackingNo, err := dhlCreateOrderExample(dpl, "128")
+	_, err := dhlCreateOrderExample(dpl, "199")
 	if err != nil {
 		panic(err)
 	}
 
 	// trackingNo := "127"
 
-	time.Sleep(10 * time.Second)
-	dhlUpdateOrderOrderExample(dpl, trackingNo)
-	dhlDeleteOrderExample(dpl, trackingNo)
+	// time.Sleep(10 * time.Second)
+	// dhlUpdateOrderOrderExample(dpl, trackingNo)
+	// dhlDeleteOrderExample(dpl, trackingNo)
 
 	// flashCreateOrderExample(dpl)
 	// flashDeleteOrderExample(dpl)
@@ -137,60 +137,60 @@ func shopeeCancelOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerC
 	}
 }
 
-func shopeeUpdateOrderExample() {
-	shopeeTimeSlotAPI := httpclient.NewHTTPPoster[shopee.TimeSlotRequest, shopee.TimeSlotResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
-	shopeeCreateOrderPoster := httpclient.NewHTTPPoster[shopee.CreateOrderRequest, shopee.CreateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
-	shopeeUpdateOrderPoster := httpclient.NewHTTPPoster[shopee.UpdateOrderRequest, shopee.UpdateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
-	shopeeCancelOrderPoster := httpclient.NewHTTPPoster[shopee.CancelOrderRequest, shopee.CancelOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+// func shopeeUpdateOrderExample() {
+// 	shopeeTimeSlotAPI := httpclient.NewHTTPPoster[shopee.TimeSlotRequest, shopee.TimeSlotResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+// 	shopeeCreateOrderPoster := httpclient.NewHTTPPoster[shopee.CreateOrderRequest, shopee.CreateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+// 	shopeeUpdateOrderPoster := httpclient.NewHTTPPoster[shopee.UpdateOrderRequest, shopee.UpdateOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
+// 	shopeeCancelOrderPoster := httpclient.NewHTTPPoster[shopee.CancelOrderRequest, shopee.CancelOrderResponse](http.DefaultClient, "https://test-stable.spx.co.th", map[string]string{})
 
-	svc := shopee.NewShopeeService(100190, "57e08ead78cf63721eed92911f2dfe8a1a1152ebc880877ceae96e406c16dbab", 36439626319285, "b32776af-28c0-4283-971c-92ac48c01afe", shopeeCreateOrderPoster, shopeeUpdateOrderPoster, shopeeCancelOrderPoster, shopeeTimeSlotAPI)
-	trackingNo, err := svc.CreateOrder(deliverypartnerconnectionlib.Order{
-		WeightInGram: 1000,
-		IsCOD:        false,
-		Sender: deliverypartnerconnectionlib.OrderAddress{
-			Name:          "John Wick",
-			AddressDetail: "dashi",
-			District:      "อำเภอเมืองบึงกาฬ",
-			Province:      "จังหวัดบึงกาฬ",
-			Phone:         "66898765432",
-			PostalCode:    "38000",
-		},
-		Receiver: deliverypartnerconnectionlib.OrderAddress{
-			Name:          "น้ำพริกแม่อำพร",
-			AddressDetail: "sdfsdf",
-			District:      "อำเภอเมืองบึงกาฬ",
-			Province:      "จังหวัดบึงกาฬ",
-			Phone:         "0812345679",
-			PostalCode:    "50210",
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
+// 	svc := shopee.NewShopeeService(100190, "57e08ead78cf63721eed92911f2dfe8a1a1152ebc880877ceae96e406c16dbab", 36439626319285, "b32776af-28c0-4283-971c-92ac48c01afe", shopeeCreateOrderPoster, shopeeUpdateOrderPoster, shopeeCancelOrderPoster, shopeeTimeSlotAPI)
+// 	trackingNo, err := svc.CreateOrder(deliverypartnerconnectionlib.Order{
+// 		WeightInGram: 1000,
+// 		IsCOD:        false,
+// 		Sender: deliverypartnerconnectionlib.OrderAddress{
+// 			Name:          "John Wick",
+// 			AddressDetail: "dashi",
+// 			District:      "อำเภอเมืองบึงกาฬ",
+// 			Province:      "จังหวัดบึงกาฬ",
+// 			Phone:         "66898765432",
+// 			PostalCode:    "38000",
+// 		},
+// 		Receiver: deliverypartnerconnectionlib.OrderAddress{
+// 			Name:          "น้ำพริกแม่อำพร",
+// 			AddressDetail: "sdfsdf",
+// 			District:      "อำเภอเมืองบึงกาฬ",
+// 			Province:      "จังหวัดบึงกาฬ",
+// 			Phone:         "0812345679",
+// 			PostalCode:    "50210",
+// 		},
+// 	})
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	fmt.Printf("shopee trackingNo: %s\n", trackingNo)
+// 	fmt.Printf("shopee trackingNo: %s\n", trackingNo)
 
-	svc.UpdateOrder(trackingNo, deliverypartnerconnectionlib.Order{
-		WeightInGram: 1000,
-		IsCOD:        false,
-		Sender: deliverypartnerconnectionlib.OrderAddress{
-			Name:          "NewJohn Wick",
-			AddressDetail: "Newdashi",
-			District:      "อำเภอเมืองบึงกาฬ",
-			Province:      "จังหวัดบึงกาฬ",
-			Phone:         "66898765432",
-			PostalCode:    "38000",
-		},
-		Receiver: deliverypartnerconnectionlib.OrderAddress{
-			Name:          "Newน้ำพริกแม่อำพร",
-			AddressDetail: "New sdfsdf",
-			District:      "อำเภอเมืองบึงกาฬ",
-			Province:      "จังหวัดบึงกาฬ",
-			Phone:         "0812345679",
-			PostalCode:    "50210",
-		},
-	})
-}
+// 	svc.UpdateOrder(trackingNo, deliverypartnerconnectionlib.Order{
+// 		WeightInGram: 1000,
+// 		IsCOD:        false,
+// 		Sender: deliverypartnerconnectionlib.OrderAddress{
+// 			Name:          "NewJohn Wick",
+// 			AddressDetail: "Newdashi",
+// 			District:      "อำเภอเมืองบึงกาฬ",
+// 			Province:      "จังหวัดบึงกาฬ",
+// 			Phone:         "66898765432",
+// 			PostalCode:    "38000",
+// 		},
+// 		Receiver: deliverypartnerconnectionlib.OrderAddress{
+// 			Name:          "Newน้ำพริกแม่อำพร",
+// 			AddressDetail: "New sdfsdf",
+// 			District:      "อำเภอเมืองบึงกาฬ",
+// 			Province:      "จังหวัดบึงกาฬ",
+// 			Phone:         "0812345679",
+// 			PostalCode:    "50210",
+// 		},
+// 	})
+// }
 
 func shopeeCreateOrderExample2() {
 	var appId = uint64(100190)
@@ -238,54 +238,54 @@ func shopeeCreateOrderExample2() {
 	print(string(body))
 }
 
-func flashUpdateOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib) {
+// func flashUpdateOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib) {
 
-	trackingNo, err := dpl.CreateOrder("FLASH", deliverypartnerconnectionlib.Order{
-		WeightInGram: 1000,
-		IsCOD:        false,
-		Sender: deliverypartnerconnectionlib.OrderAddress{
-			Name:          "หอมรวม  create order test name",
-			AddressDetail: "example detail address",
-			District:      "เมืองอุบลราชธานี",
-			Province:      "อุบลราชธานี",
-			Phone:         "0123456789",
-			PostalCode:    "34000",
-		},
-		Receiver: deliverypartnerconnectionlib.OrderAddress{
-			Name:          "น้ำพริกแม่อำพร",
-			AddressDetail: "example detail address",
-			District:      "สันทราย",
-			Province:      "เชียงใหม่",
-			Phone:         "0123456789",
-			PostalCode:    "50210",
-		},
-	})
-	if err != nil {
-		panic(err)
-	}
+// 	OrdersRes, err := dpl.CreateOrder("FLASH", deliverypartnerconnectionlib.Order{
+// 		WeightInGram: 1000,
+// 		IsCOD:        false,
+// 		Sender: deliverypartnerconnectionlib.OrderAddress{
+// 			Name:          "หอมรวม  create order test name",
+// 			AddressDetail: "example detail address",
+// 			District:      "เมืองอุบลราชธานี",
+// 			Province:      "อุบลราชธานี",
+// 			Phone:         "0123456789",
+// 			PostalCode:    "34000",
+// 		},
+// 		Receiver: deliverypartnerconnectionlib.OrderAddress{
+// 			Name:          "น้ำพริกแม่อำพร",
+// 			AddressDetail: "example detail address",
+// 			District:      "สันทราย",
+// 			Province:      "เชียงใหม่",
+// 			Phone:         "0123456789",
+// 			PostalCode:    "50210",
+// 		},
+// 	})
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	fmt.Printf("create order flash trackingNo: %s\n", trackingNo)
-	dpl.UpdateOrder("FLASH", trackingNo, deliverypartnerconnectionlib.Order{
-		WeightInGram: 1000,
-		IsCOD:        false,
-		Sender: deliverypartnerconnectionlib.OrderAddress{
-			Name:          "new หอมรวม  create order test name",
-			AddressDetail: "new example detail address",
-			District:      "เมืองอุบลราชธานี",
-			Province:      "อุบลราชธานี",
-			Phone:         "0812345679",
-			PostalCode:    "34000",
-		},
-		Receiver: deliverypartnerconnectionlib.OrderAddress{
-			Name:          "น้ำพริกแม่อำพร",
-			AddressDetail: "example detail address",
-			District:      "สันทราย",
-			Province:      "เชียงใหม่",
-			Phone:         "0898765432",
-			PostalCode:    "50210",
-		},
-	})
-}
+// 	fmt.Printf("create order flash trackingNo: %s\n", OrdersRes)
+// 	dpl.UpdateOrder("FLASH", trackingNo, deliverypartnerconnectionlib.Order{
+// 		WeightInGram: 1000,
+// 		IsCOD:        false,
+// 		Sender: deliverypartnerconnectionlib.OrderAddress{
+// 			Name:          "new หอมรวม  create order test name",
+// 			AddressDetail: "new example detail address",
+// 			District:      "เมืองอุบลราชธานี",
+// 			Province:      "อุบลราชธานี",
+// 			Phone:         "0812345679",
+// 			PostalCode:    "34000",
+// 		},
+// 		Receiver: deliverypartnerconnectionlib.OrderAddress{
+// 			Name:          "น้ำพริกแม่อำพร",
+// 			AddressDetail: "example detail address",
+// 			District:      "สันทราย",
+// 			Province:      "เชียงใหม่",
+// 			Phone:         "0898765432",
+// 			PostalCode:    "50210",
+// 		},
+// 	})
+// }
 
 func flashCreateOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib) {
 	trackingNo, err := dpl.CreateOrder("FLASH", deliverypartnerconnectionlib.Order{
@@ -350,7 +350,7 @@ func flashDeleteOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerCo
 	dpl.DeleteOrder("FLASH", "TH4714C6DB0A")
 }
 
-func dhlCreateOrderExample(dpc *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib, trackingNo string) (string, error) {
+func dhlCreateOrderExample(dpc *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib, trackingNo string) (map[string]interface{}, error) {
 	tracking, err := dpc.CreateOrder("DHL", deliverypartnerconnectionlib.Order{
 		ID:           trackingNo,
 		WeightInGram: 1000,
