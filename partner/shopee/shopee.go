@@ -143,7 +143,7 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (m
 					DeliverPhone:         order.Receiver.Phone,
 				},
 				ParcelInfo: ParcelInfo{
-					ParcelWeight:   order.WeightInGram / 1000,
+					ParcelWeight:   float64(order.WeightInGram) / 1000.0,
 					ParcelItemName: "parcel",
 				},
 			},
@@ -270,7 +270,7 @@ func (f *shopeeService) UpdateOrder(trackingNo string, order deliverypartnerconn
 					DeliverPhone:         order.Receiver.Phone,
 				},
 				ParcelInfo: ParcelInfo{
-					ParcelWeight:   order.WeightInGram / 1000,
+					ParcelWeight:   float64(order.WeightInGram) / 1000.0,
 					ParcelItemName: "parcel",
 				},
 			},

@@ -67,14 +67,14 @@ func main() {
 			"DHL":    dhl,
 		})
 
-	// shopeeCreateOrderExample(dpl)
+	shopeeCreateOrderExample(dpl)
 	// shopeeCancelOrderExample(dpl, "SPXTH044752225833")
 
 	// dhlUpdateOrderOrderExample(dpl)
-	_, err := dhlCreateOrderExample(dpl, "199")
-	if err != nil {
-		panic(err)
-	}
+	// _, err := dhlCreateOrderExample(dpl, "199")
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// trackingNo := "127"
 
@@ -104,7 +104,7 @@ func main() {
 
 func shopeeCreateOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib) {
 	trackingNo, err := dpl.CreateOrder("SHOPEE", deliverypartnerconnectionlib.Order{
-		WeightInGram: 1000,
+		WeightInGram: 2000,
 		IsCOD:        false,
 		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "John Wick",

@@ -50,8 +50,8 @@ type DeliverInfo struct {
 }
 
 type ParcelInfo struct {
-	ParcelWeight   int    `json:"parcel_weight"`
-	ParcelItemName string `json:"parcel_item_name"`
+	ParcelWeight   float64 `json:"parcel_weight"`
+	ParcelItemName string  `json:"parcel_item_name"`
 }
 
 type TimeSlotRequest struct {
