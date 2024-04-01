@@ -104,7 +104,7 @@ func main() {
 
 func shopeeCreateOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib) {
 	trackingNo, err := dpl.CreateOrder("SHOPEE", deliverypartnerconnectionlib.Order{
-		WeightInGram: 2000,
+		WeightInGram: 200,
 		IsCOD:        false,
 		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "John Wick",
