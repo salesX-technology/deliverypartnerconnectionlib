@@ -19,6 +19,7 @@ type DeliveryPartnerConnectionTestSuite struct {
 	mFlashOrderUpdator *MockOrderUpdator
 
 	mAnyOrderDeleter *MockOrderDeleter
+	mAnyOrderHook    *MockOrderHook
 
 	service *DeliveryPartnerConnectionLib
 }
@@ -30,6 +31,7 @@ func (t *DeliveryPartnerConnectionTestSuite) SetupTest() {
 	t.mDHLOrderCreator = NewMockOrderCreator(t.ctrl)
 	t.mFlashOrderUpdator = NewMockOrderUpdator(t.ctrl)
 	t.mAnyOrderDeleter = NewMockOrderDeleter(t.ctrl)
+	t.mAnyOrderHook = NewMockOrderHook(t.ctrl)
 
 	t.service = New(map[string]OrderCreator{
 		"FLASH":  t.mFlashOrderCreator,
@@ -40,6 +42,9 @@ func (t *DeliveryPartnerConnectionTestSuite) SetupTest() {
 	},
 		map[string]OrderDeleter{
 			"ANY": t.mAnyOrderDeleter,
+		},
+		map[string]OrderHook{
+			"SHOPEE": t.mAnyOrderHook,
 		},
 	)
 }

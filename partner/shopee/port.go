@@ -16,3 +16,7 @@ type ShopeeUpdateOrderAPI interface {
 type ShopeeCancelOrderAPI interface {
 	Post(endpoint string, headers map[string]string, request CancelOrderRequest) (CancelOrderResponse, error)
 }
+
+type ShopeeHookOrderAPI interface {
+	Post(endpoint string, headers map[string]string, request HookOrderRequest) (HookOrderResponse, error)
+}

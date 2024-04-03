@@ -126,3 +126,41 @@ func (mr *MockOrderDeleterMockRecorder) DeleteOrder(trackingNo any) *gomock.Call
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOrder", reflect.TypeOf((*MockOrderDeleter)(nil).DeleteOrder), trackingNo)
 }
+
+// MockOrderHook is a mock of OrderHook interface.
+type MockOrderHook struct {
+	ctrl     *gomock.Controller
+	recorder *MockOrderHookMockRecorder
+}
+
+// MockOrderHookMockRecorder is the mock recorder for MockOrderHook.
+type MockOrderHookMockRecorder struct {
+	mock *MockOrderHook
+}
+
+// NewMockOrderHook creates a new mock instance.
+func NewMockOrderHook(ctrl *gomock.Controller) *MockOrderHook {
+	mock := &MockOrderHook{ctrl: ctrl}
+	mock.recorder = &MockOrderHookMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockOrderHook) EXPECT() *MockOrderHookMockRecorder {
+	return m.recorder
+}
+
+// HookOrder mocks base method.
+func (m *MockOrderHook) HookOrder(tracking_no_list []string) (map[string]any, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HookOrder", tracking_no_list)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// HookOrder indicates an expected call of HookOrder.
+func (mr *MockOrderHookMockRecorder) HookOrder(tracking_no_list any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HookOrder", reflect.TypeOf((*MockOrderHook)(nil).HookOrder), tracking_no_list)
+}

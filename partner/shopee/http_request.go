@@ -85,3 +85,9 @@ type CancelOrderRequest struct {
 	UserSecret     string   `json:"user_secret"`
 	TrackingNoList []string `json:"tracking_no_list"`
 }
+
+type HookOrderRequest struct {
+	UserID         uint64   `json:"user_id"`
+	UserSecret     string   `json:"user_secret"`
+	TrackingNoList []string `json:"tracking_no_list"`
+}

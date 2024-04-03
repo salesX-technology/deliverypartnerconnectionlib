@@ -43,3 +43,19 @@ type ShopeeCreateOrderResponse struct {
 	InsuranceServiceFee  float64 `json:"insurance_service_fee"`
 	VATFee               float64 `json:"vat_fee"`
 }
+
+type HookOrderResponse struct {
+	RetCode int  `json:"ret_code"`
+	Data    Data `json:"data"`
+}
+
+type HookData struct {
+	Orders []HookOrderResponse `json:"orders"`
+}
+
+type HookResponse struct {
+	OrderID      string `json:"order_id"`
+	OrderIDLink  string `json:"order_id_link"`
+	TrackingNo   string `json:"tracking_no"`
+	TrackingLink string `json:"tracking_link"`
+}

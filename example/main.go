@@ -65,13 +65,21 @@ func main() {
 			"FLASH":  fs,
 			"SHOPEE": ss,
 			"DHL":    dhl,
-		})
+		},
+		map[string]deliverypartnerconnectionlib.OrderHook{
+			// "FLASH":  fs,
+			"SHOPEE": ss,
+			// "DHL":    dhl,
+		},
+	)
+	tracking_no_list := []string{"SPXTH026817968592", "SPXTH026817099535"}
+	shopeeHookOrderExamle(dpl, tracking_no_list)
 
-	shopeeCreateOrderExample(dpl)
+	// shopeeCreateOrderExample(dpl)
 	// shopeeCancelOrderExample(dpl, "SPXTH044752225833")
 
 	// dhlUpdateOrderOrderExample(dpl)
-	// _, err := dhlCreateOrderExample(dpl, "199")
+	// _, err := dhlCreateOrderExample(dpl, "209")
 	// if err != nil {
 	// 	panic(err)
 	// }
@@ -108,11 +116,11 @@ func shopeeCreateOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerC
 		IsCOD:        false,
 		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "John Wick",
-			AddressDetail: "dashi",
-			District:      "อำเภอเมืองบึงกาฬ",
-			Province:      "จังหวัดบึงกาฬ",
+			AddressDetail: "67/494 หมู่ 6 ",
+			District:      "เมืองสมุทรสาคร",
+			Province:      "สมุทรสาคร",
 			Phone:         "66898765432",
-			PostalCode:    "38000",
+			PostalCode:    "74000",
 		},
 		Receiver: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "น้ำพริกแม่อำพร",
@@ -406,4 +414,12 @@ func dhlUpdateOrderOrderExample(dpc *deliverypartnerconnectionlib.DeliveryPartne
 func dhlDeleteOrderExample(dpc *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib, trackingNo string) {
 	err := dpc.DeleteOrder("DHL", trackingNo)
 	fmt.Printf("dhl err: %v\n", err)
+}
+
+func shopeeHookOrderExamle(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib, tracking_no_list []string) {
+
+	res, _ := dpl.HookOrder("SHOPEE", tracking_no_list)
+
+	fmt.Println(res)
+
 }

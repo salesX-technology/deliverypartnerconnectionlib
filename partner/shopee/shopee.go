@@ -29,6 +29,7 @@ type shopeeService struct {
 	shopeeUpdateOrderAPI ShopeeUpdateOrderAPI
 	ShopeeCancelOrderAPI ShopeeCancelOrderAPI
 	shopeeTimeSlotAPI    ShopeePickUpTimeAPI
+	shopeeHookOrderAPI   ShopeeHookOrderAPI
 }
 
 type ShopeeServiceOption func(*shopeeService)
@@ -331,4 +332,52 @@ func (f *shopeeService) DeleteOrder(trackingNo string) error {
 	}
 
 	return nil
+}
+
+func (f *shopeeService) HookOrder(tracking_no_list []string) (map[string]interface{}, error) {
+
+	randomNumForRequest := f.randomFunc()
+	responseOrder := make(map[string]interface{})
+
+	timeStamp := f.unixFunc()
+
+	fmt.Println("tracking_no_list", tracking_no_list)
+
+	shopeeHookOrderRequestBody := HookOrderRequest{
+		UserID:         f.userID,
+		UserSecret:     f.userSecret,
+		TrackingNoList: tracking_no_list,
+	}
+
+	shopeeHookOrderRequestBodyBytes, err := json.Marshal(shopeeHookOrderRequestBody)
+	if err != nil {
+		return responseOrder, fmt.Errorf("shopee hook order failed with error: %w", err)
+	}
+
+	fmt.Println("test TEST")
+
+	response, err := f.shopeeHookOrderAPI.Post(
+		"/open/api/v1/order/batch_search_order",
+		map[string]string{
+			"Content-Type": "application/json",
+			"check-sign":   f.checkSignFunc(timeStamp, randomNumForRequest, shopeeHookOrderRequestBodyBytes),
+			"app-id":       strconv.FormatUint(f.appID, 10),
+			"timestamp":    strconv.FormatInt(timeStamp, 10),
+			"random-num":   strconv.FormatInt(randomNumForRequest, 10),
+		}, shopeeHookOrderRequestBody,
+	)
+	if err != nil {
+		return responseOrder, fmt.Errorf("shopee hook order failed with error: %w", err)
+	}
+
+	if response.RetCode != 0 {
+		return responseOrder, fmt.Errorf("shopee hook order failed with ret_code: %d", response.RetCode)
+	}
+
+	if len(response.Data.Orders) == 0 {
+		return responseOrder, fmt.Errorf("shopee hook order failed with empty orders")
+	}
+
+	return responseOrder, nil
+
 }
