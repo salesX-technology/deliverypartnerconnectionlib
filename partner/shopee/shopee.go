@@ -151,7 +151,7 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (m
 		},
 	}
 	if err != nil {
-		return responseOrder, fmt.Errorf("shopee create order failed with error: %w", err)
+		return responseOrder, fmt.Errorf("shopee create order failed with error ja: %w", err)
 	}
 
 	shopeeCreateOrderRequestBodyBytes, err := json.Marshal(shopeeCreateOrderRequestBody)
