@@ -29,12 +29,28 @@ type BD struct {
 }
 
 type ShipmentItem struct {
-	Currency         string      `json:"currency,omitempty"`
-	TotalWeight      int         `json:"totalWeight,omitempty"`
-	TotalWeightUOM   string      `json:"totalWeightUOM,omitempty"`
-	ShipmentID       string      `json:"shipmentID,omitempty"`
-	ProductCode      string      `json:"productCode,omitempty"`
-	ConsigneeAddress *DHLADdress `json:"consigneeAddress,omitempty"`
+	Currency         string            `json:"currency,omitempty"`
+	TotalWeight      int               `json:"totalWeight,omitempty"`
+	TotalWeightUOM   string            `json:"totalWeightUOM,omitempty"`
+	ShipmentID       string            `json:"shipmentID,omitempty"`
+	ProductCode      string            `json:"productCode,omitempty"`
+	ConsigneeAddress *DHLADdress       `json:"consigneeAddress,omitempty"`
+	ShipmentContents []ShipmentContent `json:"shipmentContents,omitempty"`
+}
+
+type ShipmentContent struct {
+	SkuNumber         string  `json:"skuNumber,omitempty"`
+	Description       string  `json:"description,omitempty"`
+	DescriptionImport string  `json:"descriptionImport,omitempty"`
+	DescriptionExport string  `json:"descriptionExport,omitempty"`
+	ItemValue         float64 `json:"itemValue,omitempty"`
+	ItemQuantity      int     `json:"itemQuantity,omitempty"`
+	GrossWeight       int     `json:"grossWeight,omitempty"`
+	NetWeight         int     `json:"netWeight,omitempty"`
+	WeightUOM         string  `json:"weightUOM,omitempty"`
+	ContentIndicator  string  `json:"contentIndicator,omitempty"`
+	CountryOfOrigin   string  `json:"countryOfOrigin,omitempty"`
+	HsCode            string  `json:"hsCode,omitempty"`
 }
 
 type ShipmentPiece struct {
@@ -48,6 +64,7 @@ type DHLADdress struct {
 	State    string `json:"state"`
 	District string `json:"district"`
 	PostCode string `json:"postCode"`
+	Phone    string `json:"phone"`
 }
 
 type DHLAuthenticationAPIRequest struct {

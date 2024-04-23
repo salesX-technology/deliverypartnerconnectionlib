@@ -93,6 +93,7 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (map[
 						State:    order.Sender.Province,
 						District: order.Sender.District,
 						PostCode: order.Sender.PostalCode,
+						Phone:    order.Sender.Phone,
 					},
 					SipperAddress: &DHLADdress{
 						Name:     order.Receiver.Name,
@@ -101,6 +102,7 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (map[
 						State:    order.Receiver.Province,
 						District: order.Receiver.District,
 						PostCode: order.Receiver.PostalCode,
+						Phone:    order.Receiver.Phone,
 					},
 					ShipmentItems: []ShipmentItem{
 						{
@@ -165,6 +167,7 @@ func (f *dhlService) UpdateOrder(trackingNo string, order deliverypartnerconnect
 						State:    order.Sender.Province,
 						District: order.Sender.District,
 						PostCode: order.Sender.PostalCode,
+						Phone:    order.Sender.Phone,
 					},
 					SipperAddress: &DHLADdress{
 						Name:     order.Receiver.Name,
@@ -173,6 +176,7 @@ func (f *dhlService) UpdateOrder(trackingNo string, order deliverypartnerconnect
 						State:    order.Receiver.Province,
 						District: order.Receiver.District,
 						PostCode: order.Receiver.PostalCode,
+						Phone:    order.Receiver.Phone,
 					},
 					ShipmentItems: []ShipmentItem{
 						{
@@ -271,8 +275,7 @@ func (f *dhlService) CreateReceived(order deliverypartnerconnectionlib.Order) (m
 					PickupAccountID: f.DHLAPIConfig.PickupAccountID,
 					SoldToAccountID: f.DHLAPIConfig.SoldToAccountID,
 					HandoverMethod:  handoverMethod,
-					// ShipmentContent: "pickup request",
-					PickupDateTime: orderDateTime,
+					PickupDateTime:  orderDateTime,
 					PickupAddress: &DHLADdress{
 						Name:     order.Sender.Name,
 						Address1: order.Sender.AddressDetail,
@@ -280,6 +283,7 @@ func (f *dhlService) CreateReceived(order deliverypartnerconnectionlib.Order) (m
 						State:    order.Sender.Province,
 						District: order.Sender.District,
 						PostCode: order.Sender.PostalCode,
+						Phone:    order.Sender.Phone,
 					},
 					SipperAddress: &DHLADdress{
 						Name:     order.Receiver.Name,
@@ -288,6 +292,7 @@ func (f *dhlService) CreateReceived(order deliverypartnerconnectionlib.Order) (m
 						State:    order.Receiver.Province,
 						District: order.Receiver.District,
 						PostCode: order.Receiver.PostalCode,
+						Phone:    order.Receiver.Phone,
 					},
 					ShipmentItems: []ShipmentItem{
 						{
@@ -303,6 +308,11 @@ func (f *dhlService) CreateReceived(order deliverypartnerconnectionlib.Order) (m
 								State:    order.Receiver.Province,
 								District: order.Receiver.District,
 								PostCode: order.Receiver.PostalCode,
+							},
+							ShipmentContents: []ShipmentContent{
+								{
+									Description: "pickup request",
+								},
 							},
 						},
 					},
