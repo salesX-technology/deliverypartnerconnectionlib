@@ -381,3 +381,7 @@ func (f *shopeeService) HookOrder(tracking_no_list []string) (map[string]interfa
 	return responseOrder, nil
 
 }
+
+func (f *shopeeService) CreateReceived(order deliverypartnerconnectionlib.Order) (map[string]interface{}, error) {
+	return nil, nil
+}

@@ -245,3 +245,78 @@ func (f *dhlService) DeleteOrder(trackingNo string) error {
 
 	return nil
 }
+
+func (f *dhlService) CreateReceived(order deliverypartnerconnectionlib.Order) (map[string]interface{}, error) {
+	var resDHLOrderCreateOrder map[string]interface{}
+
+	accessToken, err := f.authorizer.Authenticate()
+	if err != nil {
+		return resDHLOrderCreateOrder, err
+	}
+
+	orderDateTime := f.nowFunc().Format("2006-01-02T15:04:05-07:00")
+	_, err = f.dhlOrderCreatorAPI.Post(
+		"/rest/v3/Shipment",
+		map[string]string{
+			"Content-Type": "application/json",
+		}, DHLCreateOrderAPIRequest{
+			ManifestRequest: ManifestRequest{
+				HDR: HDR{
+					MessageType:     "SHIPMENT",
+					MessageDateTime: orderDateTime,
+					MessageVersion:  "1.0",
+					AccessToken:     accessToken,
+				},
+				BD: BD{
+					PickupAccountID: f.DHLAPIConfig.PickupAccountID,
+					SoldToAccountID: f.DHLAPIConfig.SoldToAccountID,
+					HandoverMethod:  handoverMethod,
+					// ShipmentContent: "pickup request",
+					PickupDateTime: orderDateTime,
+					PickupAddress: &DHLADdress{
+						Name:     order.Sender.Name,
+						Address1: order.Sender.AddressDetail,
+						Country:  "TH",
+						State:    order.Sender.Province,
+						District: order.Sender.District,
+						PostCode: order.Sender.PostalCode,
+					},
+					SipperAddress: &DHLADdress{
+						Name:     order.Receiver.Name,
+						Address1: order.Receiver.AddressDetail,
+						Country:  "TH",
+						State:    order.Receiver.Province,
+						District: order.Receiver.District,
+						PostCode: order.Receiver.PostalCode,
+					},
+					ShipmentItems: []ShipmentItem{
+						{
+							Currency:       "THB",
+							TotalWeight:    order.WeightInGram,
+							TotalWeightUOM: "g",
+							ShipmentID:     "DHL_PUR_" + order.ID,
+							ProductCode:    "PDO",
+							ConsigneeAddress: &DHLADdress{
+								Name:     order.Receiver.Name,
+								Address1: order.Receiver.AddressDetail,
+								Country:  "TH",
+								State:    order.Receiver.Province,
+								District: order.Receiver.District,
+								PostCode: order.Receiver.PostalCode,
+							},
+						},
+					},
+				},
+			},
+		})
+
+	if err != nil {
+		return resDHLOrderCreateOrder, err
+	}
+
+	resDHLOrderCreateOrder = map[string]interface{}{
+		"trackingNo": order.ID,
+	}
+
+	return resDHLOrderCreateOrder, nil
+}

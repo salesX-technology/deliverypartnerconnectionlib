@@ -180,3 +180,7 @@ func (f *flashService) DeleteOrder(trackingNo string) error {
 
 	return nil
 }
+
+func (f *flashService) CreateReceived(order deliverypartnerconnectionlib.Order) (map[string]interface{}, error) {
+	return nil, nil
+}

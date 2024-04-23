@@ -1,10 +1,11 @@
 package deliverypartnerconnectionlib
 
 type DeliveryPartnerConnectionLib struct {
-	partnerCreateOrderAdaptor map[string]OrderCreator
-	partnerUpdateOrderAdaptor map[string]OrderUpdator
-	partnerDeleteOrderAdaptor map[string]OrderDeleter
-	partnerHookOrderAdaptor   map[string]OrderHook
+	partnerCreateOrderAdaptor    map[string]OrderCreator
+	partnerUpdateOrderAdaptor    map[string]OrderUpdator
+	partnerDeleteOrderAdaptor    map[string]OrderDeleter
+	partnerHookOrderAdaptor      map[string]OrderHook
+	partnerCreateReceivedAdaptor map[string]OrderReceived
 }
 
 func New(
@@ -12,12 +13,14 @@ func New(
 	partnerUpdateOrderAdaptor map[string]OrderUpdator,
 	partnerDeleteOrderAdaptor map[string]OrderDeleter,
 	partnerHookOrderAdaptor map[string]OrderHook,
+	partnerCreateReceivedAdaptor map[string]OrderReceived,
 ) *DeliveryPartnerConnectionLib {
 	return &DeliveryPartnerConnectionLib{
-		partnerCreateOrderAdaptor: partnerCreateOrderAdaptor,
-		partnerUpdateOrderAdaptor: partnerUpdateOrderAdaptor,
-		partnerDeleteOrderAdaptor: partnerDeleteOrderAdaptor,
-		partnerHookOrderAdaptor:   partnerHookOrderAdaptor,
+		partnerCreateOrderAdaptor:    partnerCreateOrderAdaptor,
+		partnerUpdateOrderAdaptor:    partnerUpdateOrderAdaptor,
+		partnerDeleteOrderAdaptor:    partnerDeleteOrderAdaptor,
+		partnerHookOrderAdaptor:      partnerHookOrderAdaptor,
+		partnerCreateReceivedAdaptor: partnerCreateReceivedAdaptor,
 	}
 }
 
@@ -34,6 +37,11 @@ func (c *DeliveryPartnerConnectionLib) UpdateOrder(partner, trackingNo string, o
 func (c *DeliveryPartnerConnectionLib) DeleteOrder(partner, trackingNo string) error {
 	err := c.partnerDeleteOrderAdaptor[partner].DeleteOrder(trackingNo)
 	return err
+}
+
+func (c *DeliveryPartnerConnectionLib) CreateReceived(partner string, order Order) (map[string]interface{}, error) {
+	res, err := c.partnerCreateReceivedAdaptor[partner].CreateReceived(order)
+	return res, err
 }
 
 func (c *DeliveryPartnerConnectionLib) HookOrder(partner string, tracking_no_list []string) (map[string]interface{}, error) {

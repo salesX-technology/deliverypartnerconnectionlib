@@ -21,3 +21,7 @@ type OrderDeleter interface {
 type OrderHook interface {
 	HookOrder(tracking_no_list []string) (trackingNo map[string]interface{}, err error)
 }
+
+type OrderReceived interface {
+	CreateReceived(order Order) (trackingNo map[string]interface{}, err error)
+}

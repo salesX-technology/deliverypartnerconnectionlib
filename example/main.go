@@ -71,20 +71,30 @@ func main() {
 			"SHOPEE": ss,
 			// "DHL":    dhl,
 		},
+		map[string]deliverypartnerconnectionlib.OrderReceived{
+			"FLASH":  fs,
+			"DHL":    dhl,
+			"SHOPEE": ss,
+		},
 	)
-	tracking_no_list := []string{"SPXTH026817968592", "SPXTH026817099535"}
-	shopeeHookOrderExamle(dpl, tracking_no_list)
+	// tracking_no_list := []string{"SPXTH026817968592", "SPXTH026817099535"}
+	// shopeeHookOrderExamle(dpl, tracking_no_list)
 
 	// shopeeCreateOrderExample(dpl)
 	// shopeeCancelOrderExample(dpl, "SPXTH044752225833")
 
 	// dhlUpdateOrderOrderExample(dpl)
-	// _, err := dhlCreateOrderExample(dpl, "209")
+	// _, err := dhlCreateOrderExample(dpl, "207")
 	// if err != nil {
 	// 	panic(err)
 	// }
 
-	// trackingNo := "127"
+	_, err := dhlCreateOrderReceivedExample(dpl, "225")
+	if err != nil {
+		panic(err)
+	}
+
+	// trackingNo := "207"
 
 	// time.Sleep(10 * time.Second)
 	// dhlUpdateOrderOrderExample(dpl, trackingNo)
@@ -360,6 +370,34 @@ func flashDeleteOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerCo
 
 func dhlCreateOrderExample(dpc *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib, trackingNo string) (map[string]interface{}, error) {
 	tracking, err := dpc.CreateOrder("DHL", deliverypartnerconnectionlib.Order{
+		ID:           trackingNo,
+		WeightInGram: 1000,
+		IsCOD:        false,
+		Sender: deliverypartnerconnectionlib.OrderAddress{
+			Name:          "John Wick",
+			AddressDetail: "dashi",
+			District:      "อำเภอเมืองบึงกาฬ",
+			Province:      "จังหวัดบึงกาฬ",
+			Phone:         "66898765432",
+			PostalCode:    "38000",
+		},
+		Receiver: deliverypartnerconnectionlib.OrderAddress{
+			Name:          "น้ำพริกแม่อำพร",
+			AddressDetail: "sdfsdf",
+			District:      "อำเภอเมืองบึงกาฬ",
+			Province:      "จังหวัดบึงกาฬ",
+			Phone:         "0812345679",
+			PostalCode:    "50210",
+		},
+	})
+
+	fmt.Printf("dhl trackingNo: %s\n", tracking)
+	fmt.Printf("dhl err: %v\n", err)
+	return tracking, err
+}
+
+func dhlCreateOrderReceivedExample(dpc *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib, trackingNo string) (map[string]interface{}, error) {
+	tracking, err := dpc.CreateReceived("DHL", deliverypartnerconnectionlib.Order{
 		ID:           trackingNo,
 		WeightInGram: 1000,
 		IsCOD:        false,

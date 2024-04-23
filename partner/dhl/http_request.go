@@ -21,6 +21,7 @@ type BD struct {
 	SoldToAccountID string         `json:"soldToAccountId,omitempty"`
 	PickupDateTime  string         `json:"pickupDateTime,omitempty"`
 	HandoverMethod  int            `json:"handoverMethod,omitempty"`
+	ShipmentContent string         `json:"shipmentContent,omitempty"`
 	PickupAddress   *DHLADdress    `json:"pickupAddress,omitempty"`
 	SipperAddress   *DHLADdress    `json:"shipperAddress,omitempty"`
 	ShipmentItems   []ShipmentItem `json:"shipmentItems,omitempty"`
