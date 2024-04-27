@@ -34,6 +34,8 @@ type ShipmentItem struct {
 	TotalWeightUOM   string            `json:"totalWeightUOM,omitempty"`
 	ShipmentID       string            `json:"shipmentID,omitempty"`
 	ProductCode      string            `json:"productCode,omitempty"`
+	CodValue         float64           `json:"codValue,omitempty"`
+	TotalValue       float64           `json:"totalValue,omitempty"`
 	ConsigneeAddress *DHLADdress       `json:"consigneeAddress,omitempty"`
 	ShipmentContents []ShipmentContent `json:"shipmentContents,omitempty"`
 }

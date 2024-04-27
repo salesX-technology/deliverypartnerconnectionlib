@@ -111,6 +111,8 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (map[
 							TotalWeightUOM: "g",
 							ShipmentID:     order.ID,
 							ProductCode:    "PDO",
+							CodValue:       order.CODValue,
+							TotalValue:     order.TotalValue,
 							ConsigneeAddress: &DHLADdress{
 								Name:     order.Receiver.Name,
 								Address1: order.Receiver.AddressDetail,

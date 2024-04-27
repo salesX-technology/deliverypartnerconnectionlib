@@ -6,6 +6,8 @@ type Order struct {
 	IsCOD        bool
 	Sender       OrderAddress
 	Receiver     OrderAddress
+	CODValue     float64
+	TotalValue   float64
 }
 
 type OrderAddress struct {
