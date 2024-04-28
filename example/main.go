@@ -80,7 +80,7 @@ func main() {
 	// tracking_no_list := []string{"SPXTH026817968592", "SPXTH026817099535"}
 	// shopeeHookOrderExamle(dpl, tracking_no_list)
 
-	// shopeeCreateOrderExample(dpl)
+	shopeeCreateOrderExample(dpl)
 	// shopeeCancelOrderExample(dpl, "SPXTH044752225833")
 
 	// dhlUpdateOrderOrderExample(dpl)
@@ -89,10 +89,10 @@ func main() {
 	// 	panic(err)
 	// }
 
-	_, err := dhlCreateOrderReceivedExample(dpl, "225")
-	if err != nil {
-		panic(err)
-	}
+	// _, err := dhlCreateOrderReceivedExample(dpl, "225")
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// trackingNo := "207"
 
@@ -124,6 +124,7 @@ func shopeeCreateOrderExample(dpl *deliverypartnerconnectionlib.DeliveryPartnerC
 	trackingNo, err := dpl.CreateOrder("SHOPEE", deliverypartnerconnectionlib.Order{
 		WeightInGram: 200,
 		IsCOD:        false,
+		CODValue:     2000.00,
 		Sender: deliverypartnerconnectionlib.OrderAddress{
 			Name:          "John Wick",
 			AddressDetail: "67/494 หมู่ 6 ",

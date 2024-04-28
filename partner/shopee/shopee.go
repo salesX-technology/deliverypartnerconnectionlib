@@ -108,48 +108,97 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (m
 		"random-num":   strconv.FormatInt(randomNumForRequest, 10),
 	}, timeSlotRequest)
 
-	shopeeCreateOrderRequestBody := CreateOrderRequest{
-		UserID:     f.userID,
-		UserSecret: f.userSecret,
-		Orders: []Order{
-			{
-				OrderID: order.ID,
-				BaseInfo: BaseInfo{
-					ServiceType: 1,
-				},
-				FulfillmentInfo: FulfillmentInfo{
-					PaymentRole:         1,
-					CODCollection:       0,
-					InsuranceCollection: 0,
-					CollectType:         1,
-					PickUpTime:          timeSlotResponse.Data[0].PickupTime,
-					PickupTimeRangeID:   timeSlotResponse.Data[0].Slots[0].PickupTimeRangeID,
-				},
-				SenderInfo: SenderInfo{
-					SenderName:          order.Sender.Name,
-					SenderDetailAddress: order.Sender.AddressDetail,
-					SenderState:         order.Sender.Province,
-					SenderCity:          order.Sender.District,
-					SenderDistrict:      order.Sender.SubDistrict,
-					SenderPostCode:      order.Sender.PostalCode,
-					SenderPhone:         order.Sender.Phone,
-				},
-				DeliverInfo: DeliverInfo{
-					DeliverName:          order.Receiver.Name,
-					DeliverDetailAddress: order.Receiver.AddressDetail,
-					DeliverState:         order.Receiver.Province,
-					DeliverCity:          order.Receiver.District,
-					DeliverDistrict:      order.Receiver.SubDistrict,
-					DeliverPostCode:      order.Receiver.PostalCode,
-					DeliverPhone:         order.Receiver.Phone,
-				},
-				ParcelInfo: ParcelInfo{
-					ParcelWeight:   float64(order.WeightInGram) / 1000.0,
-					ParcelItemName: "parcel",
+	var shopeeCreateOrderRequestBody = CreateOrderRequest{}
+
+	if order.IsCOD {
+		shopeeCreateOrderRequestBody = CreateOrderRequest{
+			UserID:     f.userID,
+			UserSecret: f.userSecret,
+			Orders: []Order{
+				{
+					OrderID: order.ID,
+					BaseInfo: BaseInfo{
+						ServiceType: 1,
+					},
+					FulfillmentInfo: FulfillmentInfo{
+						PaymentRole:         1,
+						CODCollection:       1,
+						CodAmount:           int(order.CODValue),
+						InsuranceCollection: 0,
+						CollectType:         1,
+						PickUpTime:          timeSlotResponse.Data[0].PickupTime,
+						PickupTimeRangeID:   timeSlotResponse.Data[0].Slots[0].PickupTimeRangeID,
+					},
+					SenderInfo: SenderInfo{
+						SenderName:          order.Sender.Name,
+						SenderDetailAddress: order.Sender.AddressDetail,
+						SenderState:         order.Sender.Province,
+						SenderCity:          order.Sender.District,
+						SenderDistrict:      order.Sender.SubDistrict,
+						SenderPostCode:      order.Sender.PostalCode,
+						SenderPhone:         order.Sender.Phone,
+					},
+					DeliverInfo: DeliverInfo{
+						DeliverName:          order.Receiver.Name,
+						DeliverDetailAddress: order.Receiver.AddressDetail,
+						DeliverState:         order.Receiver.Province,
+						DeliverCity:          order.Receiver.District,
+						DeliverDistrict:      order.Receiver.SubDistrict,
+						DeliverPostCode:      order.Receiver.PostalCode,
+						DeliverPhone:         order.Receiver.Phone,
+					},
+					ParcelInfo: ParcelInfo{
+						ParcelWeight:   float64(order.WeightInGram) / 1000.0,
+						ParcelItemName: "parcel",
+					},
 				},
 			},
-		},
+		}
+	} else {
+		shopeeCreateOrderRequestBody = CreateOrderRequest{
+			UserID:     f.userID,
+			UserSecret: f.userSecret,
+			Orders: []Order{
+				{
+					OrderID: order.ID,
+					BaseInfo: BaseInfo{
+						ServiceType: 1,
+					},
+					FulfillmentInfo: FulfillmentInfo{
+						PaymentRole:         1,
+						CODCollection:       0,
+						InsuranceCollection: 0,
+						CollectType:         1,
+						PickUpTime:          timeSlotResponse.Data[0].PickupTime,
+						PickupTimeRangeID:   timeSlotResponse.Data[0].Slots[0].PickupTimeRangeID,
+					},
+					SenderInfo: SenderInfo{
+						SenderName:          order.Sender.Name,
+						SenderDetailAddress: order.Sender.AddressDetail,
+						SenderState:         order.Sender.Province,
+						SenderCity:          order.Sender.District,
+						SenderDistrict:      order.Sender.SubDistrict,
+						SenderPostCode:      order.Sender.PostalCode,
+						SenderPhone:         order.Sender.Phone,
+					},
+					DeliverInfo: DeliverInfo{
+						DeliverName:          order.Receiver.Name,
+						DeliverDetailAddress: order.Receiver.AddressDetail,
+						DeliverState:         order.Receiver.Province,
+						DeliverCity:          order.Receiver.District,
+						DeliverDistrict:      order.Receiver.SubDistrict,
+						DeliverPostCode:      order.Receiver.PostalCode,
+						DeliverPhone:         order.Receiver.Phone,
+					},
+					ParcelInfo: ParcelInfo{
+						ParcelWeight:   float64(order.WeightInGram) / 1000.0,
+						ParcelItemName: "parcel",
+					},
+				},
+			},
+		}
 	}
+
 	if err != nil {
 		return responseOrder, fmt.Errorf("shopee create order failed with error ja: %w", err)
 	}
