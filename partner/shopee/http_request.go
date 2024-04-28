@@ -21,13 +21,13 @@ type BaseInfo struct {
 }
 
 type FulfillmentInfo struct {
-	PaymentRole         int `json:"payment_role"`
-	CODCollection       int `json:"cod_collection"`
-	CodAmount           int `json:"cod_amount"`
-	InsuranceCollection int `json:"insurance_collection"`
-	CollectType         int `json:"collect_type"`
-	PickUpTime          int `json:"pickup_time"`
-	PickupTimeRangeID   int `json:"pickup_time_range_id"`
+	PaymentRole         int     `json:"payment_role"`
+	CODCollection       int     `json:"cod_collection"`
+	CodAmount           float64 `json:"cod_amount"`
+	InsuranceCollection int     `json:"insurance_collection"`
+	CollectType         int     `json:"collect_type"`
+	PickUpTime          int     `json:"pickup_time"`
+	PickupTimeRangeID   int     `json:"pickup_time_range_id"`
 }
 
 type SenderInfo struct {

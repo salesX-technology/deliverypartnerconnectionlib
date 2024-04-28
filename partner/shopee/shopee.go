@@ -123,7 +123,7 @@ func (f *shopeeService) CreateOrder(order deliverypartnerconnectionlib.Order) (m
 					FulfillmentInfo: FulfillmentInfo{
 						PaymentRole:         1,
 						CODCollection:       1,
-						CodAmount:           int(order.CODValue),
+						CodAmount:           order.CODValue,
 						InsuranceCollection: 0,
 						CollectType:         1,
 						PickUpTime:          timeSlotResponse.Data[0].PickupTime,
