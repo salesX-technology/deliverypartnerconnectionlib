@@ -373,11 +373,6 @@ func (f *dhlService) CreateReceived(order deliverypartnerconnectionlib.Order) (m
 								District: order.Receiver.District,
 								PostCode: order.Receiver.PostalCode,
 							},
-							ShipmentContents: []ShipmentContent{
-								{
-									Description: "pickup request",
-								},
-							},
 						},
 					},
 				},
