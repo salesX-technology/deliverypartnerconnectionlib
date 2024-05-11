@@ -39,11 +39,13 @@ func main() {
 	dhlCreateOrderAPI := httpclient.NewHTTPPoster[dhl.DHLCreateOrderAPIRequest, dhl.DHLCreateOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com", map[string]string{})
 	dhlUpdateOrderAPI := httpclient.NewHTTPPoster[dhl.DHLUpdateOrderAPIRequest, dhl.DHLUpdateOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com", map[string]string{})
 	dhlDeleteOrderAPI := httpclient.NewHTTPPoster[dhl.DHLDeleteOrderAPIRequest, dhl.DHLDeleteOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com", map[string]string{})
+	dhlHookOrderAPI := httpclient.NewHTTPPoster[dhl.DHLHookOrderAPIRequest, dhl.DHLHookOrderAPIResponse](http.DefaultClient, "https://api.dhlecommerce.dhl.com", map[string]string{})
 	dhl := dhl.NewDHLService(
 		auth,
 		dhlCreateOrderAPI,
 		dhlUpdateOrderAPI,
 		dhlDeleteOrderAPI,
+		dhlHookOrderAPI,
 		dhl.DHLAPIConfig{
 			PickupAccountID: "5299060260",
 			SoldToAccountID: "5299060260",
@@ -69,7 +71,7 @@ func main() {
 		map[string]deliverypartnerconnectionlib.OrderHook{
 			// "FLASH":  fs,
 			"SHOPEE": ss,
-			// "DHL":    dhl,
+			"DHL":    dhl,
 		},
 		map[string]deliverypartnerconnectionlib.OrderReceived{
 			"FLASH":  fs,
@@ -77,10 +79,13 @@ func main() {
 			"SHOPEE": ss,
 		},
 	)
+
+	dhlHookOrderExamle(dpl, []string{"THHSU9845765384", "THHSU1223570269"})
+
 	// tracking_no_list := []string{"SPXTH026817968592", "SPXTH026817099535"}
 	// shopeeHookOrderExamle(dpl, tracking_no_list)
 
-	shopeeCreateOrderExample(dpl)
+	// shopeeCreateOrderExample(dpl)
 	// shopeeCancelOrderExample(dpl, "SPXTH044752225833")
 
 	// dhlUpdateOrderOrderExample(dpl)
@@ -460,5 +465,13 @@ func shopeeHookOrderExamle(dpl *deliverypartnerconnectionlib.DeliveryPartnerConn
 	res, _ := dpl.HookOrder("SHOPEE", tracking_no_list)
 
 	fmt.Println(res)
+
+}
+
+func dhlHookOrderExamle(dpl *deliverypartnerconnectionlib.DeliveryPartnerConnectionLib, tracking_no_list []string) {
+
+	res, _ := dpl.HookOrder("DHL", tracking_no_list)
+
+	fmt.Println("result===>", res)
 
 }

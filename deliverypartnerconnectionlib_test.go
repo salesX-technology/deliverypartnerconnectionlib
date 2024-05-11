@@ -46,6 +46,7 @@ func (t *DeliveryPartnerConnectionTestSuite) SetupTest() {
 		map[string]OrderHook{
 			"SHOPEE": t.mAnyOrderHook,
 		},
+		map[string]OrderReceived{},
 	)
 }
 

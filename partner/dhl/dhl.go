@@ -1,6 +1,7 @@
 package dhl
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/salesX-technology/deliverypartnerconnectionlib"
@@ -17,6 +18,7 @@ type dhlService struct {
 	dhlOrderCreatorAPI DHLOrderCreatorAPI
 	dhlOrderDeletorAPI DHLOrderDeletorAPI
 	dhlOrderUpdatorAPI DHLOrderUpdatorAPI
+	dhlHookOrderAPI    DHLHookOrderAPI
 	DHLAPIConfig       DHLAPIConfig
 	nowFunc            func() time.Time
 }
@@ -33,6 +35,7 @@ func NewDHLService(
 	dhlOrderCreatorAPI DHLOrderCreatorAPI,
 	dhlOrderUpdatorAPI DHLOrderUpdatorAPI,
 	dhlOrderDeletorAPI DHLOrderDeletorAPI,
+	dhlHookOrderAPI DHLHookOrderAPI,
 	dhlAPIConfig DHLAPIConfig,
 	options ...DHLServiceOption,
 ) *dhlService {
@@ -41,6 +44,7 @@ func NewDHLService(
 		dhlOrderCreatorAPI: dhlOrderCreatorAPI,
 		dhlOrderDeletorAPI: dhlOrderDeletorAPI,
 		dhlOrderUpdatorAPI: dhlOrderUpdatorAPI,
+		dhlHookOrderAPI:    dhlHookOrderAPI,
 		DHLAPIConfig:       dhlAPIConfig,
 		nowFunc: func() time.Time {
 			return time.Now().Local()
@@ -256,6 +260,7 @@ func (f *dhlService) UpdateOrder(trackingNo string, order deliverypartnerconnect
 								State:    order.Receiver.Province,
 								District: order.Receiver.District,
 								PostCode: order.Receiver.PostalCode,
+								Phone:    order.Receiver.Phone,
 							},
 						},
 					},
@@ -372,6 +377,7 @@ func (f *dhlService) CreateReceived(order deliverypartnerconnectionlib.Order) (m
 								State:    order.Receiver.Province,
 								District: order.Receiver.District,
 								PostCode: order.Receiver.PostalCode,
+								Phone:    order.Receiver.Phone,
 							},
 						},
 					},
@@ -388,4 +394,43 @@ func (f *dhlService) CreateReceived(order deliverypartnerconnectionlib.Order) (m
 	}
 
 	return resDHLOrderCreateOrder, nil
+}
+
+func (f *dhlService) HookOrder(trackingNoLists []string) (map[string]interface{}, error) {
+
+	dhlURL := "/rest/v3/Tracking"
+
+	accessToken, err := f.authorizer.Authenticate()
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := f.dhlHookOrderAPI.PostHook(
+		dhlURL,
+		map[string]string{
+			"Content-Type": "application/json",
+		}, DHLHookOrderAPIRequest{
+			TrackItemRequest: ManifestRequest{
+				HDR: HDR{
+					MessageType:     "TRACKITEM",
+					MessageDateTime: time.Now().Format("2006-01-02T15:04:05-07:00"),
+					MessageVersion:  "1.0",
+					AccessToken:     accessToken,
+				},
+				BD: BD{
+					PickupAccountID:         f.DHLAPIConfig.PickupAccountID,
+					SoldToAccountID:         f.DHLAPIConfig.SoldToAccountID,
+					Epod:                    "Y",
+					TrackingReferenceNumber: trackingNoLists,
+				},
+			},
+		})
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to hook order: %w", err)
+	}
+	resMap := make(map[string]interface{})
+	resMap["trackingNo"] = res.TrackItemResponse.Bd.ShipmentItems
+
+	return resMap, nil
 }

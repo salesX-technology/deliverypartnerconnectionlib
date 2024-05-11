@@ -120,6 +120,51 @@ func (i httpPosterInstance[Request, Response]) Post(url string, headers map[stri
 	return m, nil
 }
 
+func (i httpPosterInstance[Request, Response]) PostHook(url string, headers map[string]string, request Request) (Response, error) {
+	var m Response
+
+	fmt.Printf("making request to %s\n", i.baseURL+url)
+	reqBody, err := json.Marshal(request)
+	if err != nil {
+		return m, fmt.Errorf("mashal request error: %s", err)
+	}
+	fmt.Printf("request: \n%s\n", string(reqBody))
+
+	req, err := netHTTP.NewRequest(netHTTP.MethodPost, i.baseURL+url, bytes.NewReader(reqBody))
+	if err != nil {
+		return m, fmt.Errorf("error creating request: %s", err)
+	}
+
+	for hKey, kValue := range i.defaultHeader {
+		req.Header.Set(hKey, kValue)
+	}
+
+	for hKey, hValue := range headers {
+		req.Header.Set(hKey, hValue)
+	}
+
+	httpResponse, err := i.httpClient.Do(req)
+	if err != nil {
+		return m, fmt.Errorf("error sending request to %s: %v", i.baseURL+url, err)
+	}
+
+	defer httpResponse.Body.Close()
+	responseBody, err := io.ReadAll(httpResponse.Body)
+	if err != nil {
+		return m, fmt.Errorf("error reading response body: %s", err)
+	}
+
+	if httpResponse.StatusCode < 200 || httpResponse.StatusCode >= 300 {
+		return m, fmt.Errorf("request not successful with status code %d", httpResponse.StatusCode)
+	}
+
+	if err := json.Unmarshal(responseBody, &m); err != nil {
+		return m, fmt.Errorf("error occurred when unmarshalling response body: %s", err)
+	}
+
+	return m, nil
+}
+
 func NewHTTPGetter[Request any, Response any](httpClient *netHTTP.Client, baseURL string, defaultHeader map[string]string) httpPosterInstance[Request, Response] {
 	return httpPosterInstance[Request, Response]{
 		httpClient:    httpClient,

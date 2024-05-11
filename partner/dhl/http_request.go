@@ -4,6 +4,10 @@ type DHLCreateOrderAPIRequest struct {
 	ManifestRequest ManifestRequest `json:"manifestRequest"`
 }
 
+type DHLHookOrderAPIRequest struct {
+	TrackItemRequest ManifestRequest `json:"trackItemRequest"`
+}
+
 type ManifestRequest struct {
 	HDR HDR `json:"hdr"`
 	BD  BD  `json:"bd"`
@@ -17,15 +21,17 @@ type HDR struct {
 }
 
 type BD struct {
-	PickupAccountID string         `json:"pickupAccountId,omitempty"`
-	SoldToAccountID string         `json:"soldToAccountId,omitempty"`
-	PickupDateTime  string         `json:"pickupDateTime,omitempty"`
-	HandoverMethod  int            `json:"handoverMethod,omitempty"`
-	ShipmentContent string         `json:"shipmentContent,omitempty"`
-	PickupAddress   *DHLADdress    `json:"pickupAddress,omitempty"`
-	SipperAddress   *DHLADdress    `json:"shipperAddress,omitempty"`
-	ShipmentItems   []ShipmentItem `json:"shipmentItems,omitempty"`
-	Label           *Label         `json:"label,omitempty"`
+	PickupAccountID         string         `json:"pickupAccountId,omitempty"`
+	SoldToAccountID         string         `json:"soldToAccountId,omitempty"`
+	PickupDateTime          string         `json:"pickupDateTime,omitempty"`
+	HandoverMethod          int            `json:"handoverMethod,omitempty"`
+	ShipmentContent         string         `json:"shipmentContent,omitempty"`
+	PickupAddress           *DHLADdress    `json:"pickupAddress,omitempty"`
+	SipperAddress           *DHLADdress    `json:"shipperAddress,omitempty"`
+	ShipmentItems           []ShipmentItem `json:"shipmentItems,omitempty"`
+	Label                   *Label         `json:"label,omitempty"`
+	Epod                    string         `json:"ePODRequired,omitempty"`
+	TrackingReferenceNumber []string       `json:"trackingReferenceNumber,omitempty"`
 }
 
 type ShipmentItem struct {
