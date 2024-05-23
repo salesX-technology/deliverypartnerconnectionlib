@@ -43,6 +43,7 @@ func NewShopeeService(
 	shopeeUpdateOrderAPI ShopeeUpdateOrderAPI,
 	ShopeeCancelOrderAPI ShopeeCancelOrderAPI,
 	shopeeTimeSlotAPI ShopeePickUpTimeAPI,
+	shopeeHookOrderAPI ShopeeHookOrderAPI,
 	options ...ShopeeServiceOption,
 ) *shopeeService {
 	svc := &shopeeService{
@@ -57,6 +58,7 @@ func NewShopeeService(
 		shopeeUpdateOrderAPI: shopeeUpdateOrderAPI,
 		ShopeeCancelOrderAPI: ShopeeCancelOrderAPI,
 		shopeeTimeSlotAPI:    shopeeTimeSlotAPI,
+		shopeeHookOrderAPI:   shopeeHookOrderAPI,
 	}
 
 	for _, option := range options {
@@ -415,6 +417,11 @@ func (f *shopeeService) HookOrder(tracking_no_list []string) (map[string]interfa
 			"random-num":   strconv.FormatInt(randomNumForRequest, 10),
 		}, shopeeHookOrderRequestBody,
 	)
+	if err != nil {
+		fmt.Println("err", err)
+	}
+
+	fmt.Println("response", response)
 	if err != nil {
 		return responseOrder, fmt.Errorf("shopee hook order failed with error: %w", err)
 	}
