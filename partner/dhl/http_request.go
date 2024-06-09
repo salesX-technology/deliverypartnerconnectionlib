@@ -44,6 +44,7 @@ type ShipmentItem struct {
 	TotalValue       float64           `json:"totalValue,omitempty"`
 	ConsigneeAddress *DHLADdress       `json:"consigneeAddress,omitempty"`
 	ShipmentContents []ShipmentContent `json:"shipmentContents,omitempty"`
+	ReturnMode       string            `json:"returnMode,omitempty"`
 }
 
 type ShipmentContent struct {

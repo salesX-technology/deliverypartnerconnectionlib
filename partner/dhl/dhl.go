@@ -118,6 +118,7 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (map[
 								ShipmentID:     order.ID,
 								ProductCode:    "PDO",
 								CodValue:       order.CODValue,
+								ReturnMode:     "02",
 								ConsigneeAddress: &DHLADdress{
 									Name:     order.Receiver.Name,
 									Address1: order.Receiver.AddressDetail,
@@ -176,6 +177,7 @@ func (f *dhlService) CreateOrder(order deliverypartnerconnectionlib.Order) (map[
 								TotalWeightUOM: "g",
 								ShipmentID:     order.ID,
 								ProductCode:    "PDO",
+								ReturnMode:     "02",
 								ConsigneeAddress: &DHLADdress{
 									Name:     order.Receiver.Name,
 									Address1: order.Receiver.AddressDetail,
@@ -253,6 +255,7 @@ func (f *dhlService) UpdateOrder(trackingNo string, order deliverypartnerconnect
 							TotalWeightUOM: "g",
 							ShipmentID:     trackingNo,
 							ProductCode:    "PDO",
+							ReturnMode:     "02",
 							ConsigneeAddress: &DHLADdress{
 								Name:     order.Receiver.Name,
 								Address1: order.Receiver.AddressDetail,
