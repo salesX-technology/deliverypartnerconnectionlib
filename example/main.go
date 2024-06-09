@@ -83,7 +83,7 @@ func main() {
 
 	// dhlHookOrderExamle(dpl, []string{"THHSU3397481134"})
 
-	tracking_no_list := []string{"SPXTH043659814003", "SPXTH041395524904"}
+	tracking_no_list := []string{"SPXTH048939961835", "SPXTH047880152245"}
 	shopeeHookOrderExamle(dpl, tracking_no_list)
 
 	// shopeeCreateOrderExample(dpl)
@@ -468,7 +468,9 @@ func shopeeHookOrderExamle(dpl *deliverypartnerconnectionlib.DeliveryPartnerConn
 		fmt.Println("err===>", err)
 	}
 
-	fmt.Println(res)
+	for _, v := range res {
+		fmt.Println("result===>", v)
+	}
 
 }
 

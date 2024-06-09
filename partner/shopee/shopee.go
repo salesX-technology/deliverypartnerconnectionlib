@@ -392,8 +392,6 @@ func (f *shopeeService) HookOrder(tracking_no_list []string) (map[string]interfa
 
 	timeStamp := f.unixFunc()
 
-	fmt.Println("tracking_no_list", tracking_no_list)
-
 	shopeeHookOrderRequestBody := HookOrderRequest{
 		UserID:         f.userID,
 		UserSecret:     f.userSecret,
@@ -405,9 +403,7 @@ func (f *shopeeService) HookOrder(tracking_no_list []string) (map[string]interfa
 		return responseOrder, fmt.Errorf("shopee hook order failed with error: %w", err)
 	}
 
-	fmt.Println("test TEST")
-
-	response, err := f.shopeeHookOrderAPI.Post(
+	response, respText, err := f.shopeeHookOrderAPI.PostHookSPX(
 		"/open/api/v1/order/batch_search_order",
 		map[string]string{
 			"Content-Type": "application/json",
@@ -421,7 +417,12 @@ func (f *shopeeService) HookOrder(tracking_no_list []string) (map[string]interfa
 		fmt.Println("err", err)
 	}
 
-	fmt.Println("response", response)
+	// fmt.Println("respText", respText)
+	err = json.Unmarshal(respText, &response)
+	if err != nil {
+		return responseOrder, fmt.Errorf("shopee hook order failed with error: %w", err)
+	}
+
 	if err != nil {
 		return responseOrder, fmt.Errorf("shopee hook order failed with error: %w", err)
 	}
@@ -433,6 +434,11 @@ func (f *shopeeService) HookOrder(tracking_no_list []string) (map[string]interfa
 	if len(response.Data.Orders) == 0 {
 		return responseOrder, fmt.Errorf("shopee hook order failed with empty orders")
 	}
+
+	// fmt.Println("response", response)
+
+	// convert response to string
+	responseOrder["trackingNo"] = response
 
 	return responseOrder, nil
 

@@ -150,6 +150,8 @@ func (i httpPosterInstance[Request, Response]) PostHook(url string, headers map[
 
 	defer httpResponse.Body.Close()
 	responseBody, err := io.ReadAll(httpResponse.Body)
+
+	// fmt.Printf("response: \n%s\n", string(responseBody))
 	if err != nil {
 		return m, fmt.Errorf("error reading response body: %s", err)
 	}
@@ -160,9 +162,70 @@ func (i httpPosterInstance[Request, Response]) PostHook(url string, headers map[
 
 	if err := json.Unmarshal(responseBody, &m); err != nil {
 		return m, fmt.Errorf("error occurred when unmarshalling response body: %s", err)
+	} else {
+		fmt.Printf("response: \n%s\n", string(responseBody))
 	}
 
 	return m, nil
+}
+
+func (i httpPosterInstance[Request, Response]) PostHookSPX(url string, headers map[string]string, request Request) (Response, []byte, error) {
+	var m Response
+
+	// Construct full URL
+	fullURL := i.baseURL + url
+	fmt.Printf("making request to %s\n", fullURL)
+
+	// Marshal the request body
+	reqBody, err := json.Marshal(request)
+	if err != nil {
+		return m, nil, fmt.Errorf("marshal request error: %v", err)
+	}
+	fmt.Printf("request: \n%s\n", string(reqBody))
+
+	// Create a new HTTP POST request
+	req, err := netHTTP.NewRequest(netHTTP.MethodPost, fullURL, bytes.NewReader(reqBody))
+	if err != nil {
+		return m, nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	// Set default headers
+	for hKey, kValue := range i.defaultHeader {
+		req.Header.Set(hKey, kValue)
+	}
+
+	// Set additional headers
+	for hKey, hValue := range headers {
+		req.Header.Set(hKey, hValue)
+	}
+
+	// Send the HTTP request
+	httpResponse, err := i.httpClient.Do(req)
+	if err != nil {
+		return m, nil, fmt.Errorf("error sending request to %s: %v", fullURL, err)
+	}
+	defer httpResponse.Body.Close()
+
+	// Read the response body
+	responseBody, err := io.ReadAll(httpResponse.Body)
+	if err != nil {
+		return m, nil, fmt.Errorf("error reading response body: %v", err)
+	}
+
+	// Check for HTTP status codes indicating failure
+	if httpResponse.StatusCode < 200 || httpResponse.StatusCode >= 300 {
+		return m, responseBody, fmt.Errorf("request not successful with status code %d", httpResponse.StatusCode)
+	}
+
+	// Try to unmarshal the response body into the response object
+	if err := json.Unmarshal(responseBody, &m); err != nil {
+		return m, responseBody, fmt.Errorf("error unmarshalling response body: %v", err)
+	}
+
+	// Print the response for debugging purposes
+	fmt.Printf("response: \n%s\n", responseBody)
+
+	return m, responseBody, nil
 }
 
 func NewHTTPGetter[Request any, Response any](httpClient *netHTTP.Client, baseURL string, defaultHeader map[string]string) httpPosterInstance[Request, Response] {
