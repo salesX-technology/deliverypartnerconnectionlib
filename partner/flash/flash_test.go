@@ -76,7 +76,7 @@ func (t *FlashTestSuite) TestGivenNonCODOrderIsCreating_WhenCreateOrder_ThenCrea
 		},
 	}, nil)
 
-	trackingNo, err := t.service.CreateOrder(deliverypartnerconnectionlib.Order{
+	resp, err := t.service.CreateOrder(deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        false,
 		Sender: deliverypartnerconnectionlib.OrderAddress{
@@ -99,7 +99,11 @@ func (t *FlashTestSuite) TestGivenNonCODOrderIsCreating_WhenCreateOrder_ThenCrea
 		},
 	})
 
-	t.Equal("trackingNo", trackingNo)
+	respTrankingNo := ""
+	if resp != nil {
+		respTrankingNo = resp["PNO"].(string)
+	}
+	t.Equal("trackingNo", respTrankingNo)
 	t.NoError(err)
 }
 
@@ -126,6 +130,7 @@ func (t *FlashTestSuite) TestGivenCODOrderIsCreating_WhenCreateOrder_ThenCreateS
 		"srcPostalCode":    "34000",
 		"srcProvinceName":  "อุบลราชธานี",
 		"weight":           "1000",
+		"subItemTypes":     "[{\"itemName\":\"test\",\"itemWeightSize\":\"xl\",\"itemColor\":\"r\",\"itemQuantity\":100}]",
 		"sign":             "signature",
 	}).Return(FlashCreateOrderAPIResponse{
 		Data: FlasFlashCreateOrderAPIResponseData{
@@ -133,7 +138,7 @@ func (t *FlashTestSuite) TestGivenCODOrderIsCreating_WhenCreateOrder_ThenCreateS
 		},
 	}, nil)
 
-	trackingNo, err := t.service.CreateOrder(deliverypartnerconnectionlib.Order{
+	resp, err := t.service.CreateOrder(deliverypartnerconnectionlib.Order{
 		WeightInGram: 1000,
 		IsCOD:        true,
 		Sender: deliverypartnerconnectionlib.OrderAddress{
@@ -154,9 +159,22 @@ func (t *FlashTestSuite) TestGivenCODOrderIsCreating_WhenCreateOrder_ThenCreateS
 			Phone:         "0123456789",
 			PostalCode:    "50210",
 		},
+		SubItemTypes: []*deliverypartnerconnectionlib.SubItemType{
+			{
+				ItemName:       "test",
+				ItemWeightSize: "xl",
+				ItemColor:      "r",
+				ItemQuantity:   100,
+			},
+		},
 	})
 
-	t.Equal("trackingNo", trackingNo)
+	respTrankingNo := ""
+	if resp != nil {
+		respTrankingNo = resp["PNO"].(string)
+	}
+
+	t.Equal("trackingNo", respTrankingNo)
 	t.NoError(err)
 }
 

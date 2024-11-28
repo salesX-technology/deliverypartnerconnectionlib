@@ -1,6 +1,7 @@
 package flash
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/salesX-technology/deliverypartnerconnectionlib"
@@ -100,6 +101,14 @@ func (f *flashService) CreateOrder(order deliverypartnerconnectionlib.Order) (ma
 		"srcPostalCode":    order.Sender.PostalCode,
 		"srcProvinceName":  order.Sender.Province,
 		"weight":           fmt.Sprintf("%d", order.WeightInGram),
+	}
+
+	if len(order.SubItemTypes) > 0 {
+		bSubItemTypes, err := json.Marshal(order.SubItemTypes)
+		if err != nil {
+			return nil, err
+		}
+		keyedOrderInfo["subItemTypes"] = string(bSubItemTypes)
 	}
 
 	plainSignature := f.signatureGenerator(keyedOrderInfo, f.secretKey)
